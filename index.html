@@ -1,0 +1,2569 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>УСН и НДС — калькулятор</title>
+<meta name="description" content="Калькулятор и шпаргалка для ИП и ООО на УСН: когда платить НДС, сколько и в какие сроки. Изменения 2026 года и справка по 2027.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Токены и анимации перенесены с сайта НейроБухгалтерии (styles.css v4)
+   ============================================================ */
+:root {
+  --teal-600: #008AAA;
+  --teal-550: #018DB0;
+  --cyan-500: #2BB6D9;
+  --cyan-400: #3BBADB;
+  --cyan-100: #E3F5FB;
+  --cyan-050: #F3FBFD;
+  --terracotta-500: #D1884F;
+  --terracotta-100: #F7E7DA;
+  --ink: #000;
+  --ink-700: #333;
+  --ink-500: #5C5C5C;
+  --ink-300: #9A9A9A;
+  --hairline: #E4EBED;
+  --white: #fff;
+  --danger: #C0392B;
+  --danger-100: #FBE9E7;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+  --shadow-brand: 0 10px 6px rgba(0,138,170,.23);
+  --shadow-brand-soft: 0 4px 4px rgba(0,138,170,.17);
+  --shadow-card: 0 8px 24px rgba(0,138,170,.10);
+  --shadow-lift: 0 14px 30px rgba(0,138,170,.18);
+
+  --ease-out: cubic-bezier(.22,1,.36,1);
+  --dur: 200ms;
+
+  --header-h: 72px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--white);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+a { color: var(--teal-600); text-decoration: none; transition: color var(--dur) var(--ease-out); }
+a:hover { color: var(--terracotta-500); }
+:focus-visible { outline: 3px solid var(--cyan-400); outline-offset: 2px; border-radius: 4px; }
+.skip-link { position: absolute; left: -9999px; top: 8px; background: var(--teal-600); color: #fff; padding: 10px 18px; border-radius: var(--radius-sm); z-index: 100; }
+.skip-link:focus { left: 12px; color: #fff; }
+.container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+/* ---------- Кнопки ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  font: 500 17px/1.2 var(--font-sans);
+  padding: 14px 26px; border: none; border-radius: var(--radius-sm);
+  cursor: pointer; text-align: center;
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out), filter var(--dur) var(--ease-out);
+}
+.btn--primary { background: var(--teal-600); color: var(--white); box-shadow: var(--shadow-brand); }
+.btn--primary:hover { color: #fff; transform: translateY(-2px); filter: brightness(1.06); }
+.btn--secondary { background: var(--white); color: var(--teal-600); box-shadow: inset 0 0 0 2px var(--teal-600), var(--shadow-brand-soft); }
+.btn--secondary:hover { color: var(--teal-600); transform: translateY(-2px); }
+.btn--sm { font-size: 15px; padding: 9px 16px; }
+.btn:active { transform: translateY(0); }
+
+/* ---------- Хедер ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--hairline);
+}
+.header-inner { min-height: var(--header-h); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 21px; letter-spacing: -.01em; white-space: nowrap; color: var(--ink); }
+.wordmark:hover { color: var(--ink); }
+.wordmark__mark { width: 11px; height: 11px; background: var(--terracotta-500); flex: none; }
+.wordmark__a { color: var(--teal-600); }
+.nav { display: flex; align-items: center; gap: 26px; font-size: 16px; }
+.nav a { color: var(--ink); font-weight: 500; }
+.nav a:hover { color: var(--terracotta-500); }
+.header-tools { display: flex; align-items: center; gap: 12px; }
+.burger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 44px; height: 44px; padding: 0; background: none; border: none; cursor: pointer; }
+.burger span { display: block; height: 2px; width: 24px; margin: 0 auto; background: var(--teal-600); border-radius: 2px; transition: transform var(--dur) var(--ease-out), opacity var(--dur) var(--ease-out); }
+.burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ---------- Секции ---------- */
+.section { padding: 88px 0; }
+.section--wash { background: var(--cyan-050); }
+.section__lead { font-size: 18px; color: var(--ink-500); margin: -22px 0 36px; max-width: 820px; }
+.h2 { font-weight: 700; font-size: clamp(27px, 4vw, 38px); line-height: 1.2; letter-spacing: -.01em; color: var(--teal-550); margin: 0 0 32px; }
+.h2__mark { display: inline-block; width: 13px; height: 13px; background: var(--terracotta-500); margin-right: 13px; vertical-align: middle; }
+.h3 { font-size: 20px; font-weight: 600; color: var(--teal-600); margin: 0 0 12px; line-height: 1.3; }
+
+/* ---------- Hero ---------- */
+.hero { position: relative; padding: 96px 0 88px; overflow: hidden; isolation: isolate; }
+.hero__inner { position: relative; z-index: 1; max-width: 900px; text-align: center; }
+.hero__aura { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.hero__grid {
+  position: absolute; inset: 0; display: block; width: 100%; height: 100%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 80%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 80%, transparent 100%);
+}
+.hero__aura::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 62% 58% at 50% 46%, rgba(255,255,255,.97) 0%, rgba(255,255,255,.88) 48%, rgba(255,255,255,0) 80%);
+}
+.orb { position: absolute; border-radius: 50%; will-change: transform; }
+.orb--teal { width: 620px; height: 620px; top: -180px; left: -140px; background: radial-gradient(circle, rgba(0,138,170,.22) 0%, rgba(0,138,170,0) 68%); animation: drift1 30s ease-in-out infinite alternate; }
+.orb--cyan { width: 560px; height: 560px; top: -60px; right: -160px; background: radial-gradient(circle, rgba(43,182,217,.24) 0%, rgba(43,182,217,0) 68%); animation: drift2 36s ease-in-out infinite alternate; }
+.orb--terracotta { width: 460px; height: 460px; bottom: -200px; left: 42%; background: radial-gradient(circle, rgba(209,136,79,.16) 0%, rgba(209,136,79,0) 68%); animation: drift3 42s ease-in-out infinite alternate; }
+@keyframes drift1 { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(70px,46px) scale(1.09); } 100% { transform: translate(24px,-34px) scale(1.02); } }
+@keyframes drift2 { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(-64px,56px) scale(1.06); } 100% { transform: translate(-18px,-28px) scale(.97); } }
+@keyframes drift3 { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(-80px,-40px) scale(1.12); } 100% { transform: translate(50px,-14px) scale(1.03); } }
+
+.rise { animation: rise .85s var(--ease-out) both; animation-delay: var(--d, 0ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+.js-reveal [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); transition-delay: var(--d, 0ms); }
+.js-reveal [data-reveal].is-visible { opacity: 1; transform: none; }
+
+.hero__title { font-weight: 700; font-size: clamp(34px, 6.2vw, 60px); line-height: 1.12; letter-spacing: -.015em; color: var(--teal-550); margin: 0 0 26px; }
+.grad {
+  background: linear-gradient(90deg, var(--terracotta-500), var(--teal-600), var(--cyan-500), var(--terracotta-500));
+  background-size: 260% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: gradShift 11s ease-in-out infinite;
+}
+@keyframes gradShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+.hero__lead { font-weight: 500; font-size: clamp(17px, 2.2vw, 21px); line-height: 1.55; color: var(--ink-700); max-width: 760px; margin: 0 auto 36px; }
+.hero__actions { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+.blocks { display: flex; gap: 10px; justify-content: center; margin-top: 48px; }
+.blocks--sep { margin: 0; padding: 26px 0; }
+.blocks__b { width: 15px; height: 15px; animation: beat 3.6s var(--ease-out) infinite; }
+.blocks__b--terracotta { background: var(--terracotta-500); }
+.blocks__b--teal { background: var(--teal-600); animation-delay: .28s; }
+.blocks__b--cyan { background: var(--cyan-500); animation-delay: .56s; }
+@keyframes beat { 0%, 55%, 100% { transform: scale(1); opacity: .85; } 22% { transform: scale(1.35); opacity: 1; } }
+
+.hero-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 44px; text-align: left; }
+.hero-kpi { background: rgba(255,255,255,.9); border: 1px solid var(--hairline); border-radius: var(--radius-lg); padding: 18px 20px; box-shadow: var(--shadow-card); }
+.hero-kpi__v { font-size: 30px; font-weight: 700; color: var(--teal-600); line-height: 1.1; letter-spacing: -.01em; }
+.hero-kpi__v small { font-size: 18px; }
+.hero-kpi__l { font-size: 14px; color: var(--ink-500); margin-top: 6px; line-height: 1.4; }
+
+/* ---------- Карточки ---------- */
+.grid { display: grid; gap: 22px; }
+.grid--2 { grid-template-columns: repeat(2, 1fr); }
+.grid--3 { grid-template-columns: repeat(3, 1fr); }
+.card {
+  background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
+  padding: 28px 30px;
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+.card--static:hover { transform: none; box-shadow: var(--shadow-card); }
+.card--row { display: flex; gap: 18px; align-items: flex-start; }
+.card__title { font-size: 20px; font-weight: 600; color: var(--teal-600); margin: 0 0 8px; line-height: 1.3; }
+.card__text { font-size: 16px; line-height: 1.55; color: var(--ink-700); margin: 0; }
+.card__text + .card__text { margin-top: 10px; }
+
+.ic { position: relative; flex: none; width: 50px; height: 50px; border-radius: var(--radius-md); display: inline-flex; align-items: center; justify-content: center; }
+.ic > svg:not(.ic__ring) { width: 24px; height: 24px; }
+.ic--teal { background: var(--cyan-100); color: var(--teal-600); }
+.ic--terracotta { background: var(--terracotta-100); color: var(--terracotta-500); }
+.ic__ring { position: absolute; inset: -5px; width: calc(100% + 10px); height: calc(100% + 10px); transform: rotate(-90deg); pointer-events: none; overflow: visible; }
+.ic__ring rect { fill: none; stroke: var(--terracotta-500); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; opacity: 0; }
+.services-ring .card:nth-child(1) .ic__ring rect { animation: ringDraw 10s linear infinite 0s; }
+.services-ring .card:nth-child(2) .ic__ring rect { animation: ringDraw 10s linear infinite 2.5s; }
+.services-ring .card:nth-child(4) .ic__ring rect { animation: ringDraw 10s linear infinite 5s; }
+.services-ring .card:nth-child(3) .ic__ring rect { animation: ringDraw 10s linear infinite 7.5s; }
+@keyframes ringDraw {
+  0% { stroke-dashoffset: 100; opacity: 0; }
+  3% { opacity: 1; }
+  20% { stroke-dashoffset: 0; opacity: 1; }
+  30% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 14px 0 0; }
+.chip { padding: 6px 12px; border-radius: 999px; background: var(--cyan-100); color: var(--teal-600); font-size: 13px; font-weight: 600; }
+.chip--accent { background: var(--terracotta-100); color: var(--terracotta-500); }
+.chip--muted { background: #EEF2F3; color: var(--ink-500); }
+
+/* ---------- Таблица фактов ---------- */
+.facts { width: 100%; border-collapse: collapse; font-size: 15px; }
+.facts th, .facts td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+.facts thead th { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-500); font-weight: 600; background: var(--cyan-050); }
+.facts td.num { white-space: nowrap; font-weight: 600; }
+.facts tr:last-child td { border-bottom: none; }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius-lg); background: #fff; box-shadow: var(--shadow-card); }
+
+/* ---------- Шкала порогов ---------- */
+.timeline { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin: 8px 0 30px; }
+.tl { border-radius: var(--radius-md); padding: 14px 10px; text-align: center; background: #fff; box-shadow: var(--shadow-card); position: relative; }
+.tl__y { font-size: 13px; color: var(--ink-500); font-weight: 600; }
+.tl__v { font-size: 22px; font-weight: 700; color: var(--teal-600); line-height: 1.2; margin-top: 4px; }
+.tl__v small { font-size: 13px; font-weight: 600; }
+.tl--now { background: var(--teal-600); }
+.tl--now .tl__y, .tl--now .tl__v { color: #fff; }
+.tl--old .tl__v { color: var(--ink-300); }
+.tl--down .tl__v { color: var(--terracotta-500); }
+
+/* ---------- Азбука (раскрывашки) ---------- */
+.faq { display: grid; gap: 14px; }
+.faq--2 { grid-template-columns: repeat(2, 1fr); align-items: start; }
+.qa { background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); transition: box-shadow var(--dur) var(--ease-out); }
+.qa:hover { box-shadow: var(--shadow-lift); }
+.qa > summary { list-style: none; cursor: pointer; padding: 18px 54px 18px 22px; font-weight: 600; font-size: 17px; color: var(--ink); position: relative; }
+.qa > summary::-webkit-details-marker { display: none; }
+.qa > summary::after {
+  content: ""; position: absolute; right: 22px; top: 50%; width: 10px; height: 10px; margin-top: -7px;
+  border-right: 2px solid var(--teal-600); border-bottom: 2px solid var(--teal-600);
+  transform: rotate(45deg); transition: transform var(--dur) var(--ease-out);
+}
+.qa[open] > summary::after { transform: rotate(-135deg); margin-top: -2px; }
+.qa[open] > summary { color: var(--teal-600); }
+.qa__body { padding: 0 22px 20px; font-size: 16px; line-height: 1.6; color: var(--ink-700); animation: koPop 220ms var(--ease-out); }
+.qa__body p { margin: 0 0 10px; }
+.qa__body p:last-child { margin: 0; }
+.qa__ex { background: var(--cyan-050); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 15px; }
+@keyframes koPop { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: none; } }
+
+/* ---------- Калькулятор ---------- */
+.calc { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); }
+.results { grid-template-columns: minmax(0, 1fr); }
+.field--wide { grid-column: 1 / -1; }
+.step { background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 26px 28px; }
+.step__head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.step__n { width: 34px; height: 34px; flex: none; border-radius: 10px; background: var(--teal-600); color: #fff; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; box-shadow: var(--shadow-brand-soft); }
+.step__t { font-size: 20px; font-weight: 600; color: var(--teal-600); margin: 0; }
+.ctrls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 18px 22px; }
+.field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.field__label { font-size: 14px; font-weight: 600; color: var(--ink-700); display: flex; align-items: center; gap: 6px; }
+.field__hint { font-size: 13px; color: var(--ink-500); line-height: 1.4; }
+.field__input {
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--hairline); border-radius: 11px;
+  font: 400 16px/1.4 var(--font-sans); color: var(--ink); background: var(--white); outline: none;
+  transition: border-color var(--dur) var(--ease-out);
+}
+.field__input:focus { border-color: var(--teal-600); }
+.field__input::placeholder { color: var(--ink-300); }
+.field__input.is-error { border-color: var(--danger); background: var(--danger-100); }
+select.field__input { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--teal-600) 50%), linear-gradient(135deg, var(--teal-600) 50%, transparent 50%); background-position: calc(100% - 20px) 52%, calc(100% - 14px) 52%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 38px; }
+.inline { display: flex; gap: 10px; align-items: center; }
+.inline .field__input { max-width: 110px; }
+
+.seg { display: inline-flex; flex-wrap: wrap; gap: 6px; background: var(--cyan-050); border: 1px solid var(--hairline); border-radius: 12px; padding: 4px; }
+.seg button {
+  border: none; background: transparent; color: var(--ink-700); cursor: pointer;
+  font: 500 15px/1.2 var(--font-sans); padding: 9px 14px; border-radius: 9px; text-align: left;
+  transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+}
+.seg button:hover { color: var(--teal-600); }
+.seg button[aria-pressed="true"] { background: var(--teal-600); color: #fff; box-shadow: var(--shadow-brand-soft); }
+.seg--sm button { font-size: 14px; padding: 7px 12px; }
+
+.hint { display: inline-flex; width: 18px; height: 18px; border-radius: 50%; background: var(--cyan-100); color: var(--teal-600); font-size: 12px; font-weight: 700; align-items: center; justify-content: center; cursor: help; position: relative; flex: none; }
+.hint::after {
+  content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%) translateY(4px);
+  width: max-content; max-width: 260px; background: var(--ink-700); color: #fff; font-size: 13px; font-weight: 400; line-height: 1.4;
+  padding: 8px 11px; border-radius: 8px; opacity: 0; pointer-events: none; z-index: 20;
+  transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+}
+.hint:hover::after, .hint:focus::after { opacity: 1; transform: translateX(-50%); }
+
+.note { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 12px 16px; font-size: 15px; line-height: 1.55; color: var(--ink-700); background: var(--cyan-100); border-left: 3px solid var(--teal-600); margin: 14px 0 0; }
+.note--warn { background: var(--terracotta-100); border-left-color: var(--terracotta-500); }
+.note--danger { background: var(--danger-100); border-left-color: var(--danger); }
+.note b { color: var(--ink); }
+
+.data-tbl { width: 100%; border-collapse: separate; border-spacing: 0; }
+.data-tbl th { font-size: 13px; color: var(--ink-500); font-weight: 600; text-align: left; padding: 0 8px 8px; white-space: nowrap; }
+.data-tbl td { padding: 5px 8px; vertical-align: middle; }
+.data-tbl td:first-child { font-weight: 600; font-size: 15px; white-space: nowrap; color: var(--ink-700); }
+.data-tbl .field__input { padding: 10px 12px; min-width: 110px; text-align: right; }
+.data-tbl .sub { display: block; font-size: 12px; color: var(--ink-500); font-weight: 400; }
+.data-tbl tfoot td { padding-top: 10px; border-top: 2px solid var(--hairline); font-weight: 700; font-size: 16px; color: var(--teal-600); white-space: nowrap; }
+.data-tbl tfoot td:last-child { text-align: right; padding-right: 22px; font-variant-numeric: tabular-nums; }
+.data-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.is-forecast { color: var(--ink-300) !important; font-style: italic; }
+
+/* ---------- Результаты ---------- */
+.results { display: grid; gap: 22px; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.kpi { background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 20px 22px; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out); }
+.kpi:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+.kpi__l { font-size: 14px; color: var(--ink-500); display: flex; align-items: center; gap: 8px; }
+.kpi__dot { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.kpi__v { font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 6px; letter-spacing: -.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kpi__s { font-size: 13px; color: var(--ink-500); margin-top: 4px; }
+.kpi--main { background: var(--teal-600); }
+.kpi--main .kpi__l, .kpi--main .kpi__s { color: rgba(255,255,255,.86); }
+.kpi--main .kpi__v { color: #fff; }
+
+.status { border-radius: var(--radius-lg); padding: 24px 26px; display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: start; box-shadow: var(--shadow-card); background: #fff; border-top: 5px solid var(--teal-600); }
+.status--payer { border-top-color: var(--terracotta-500); }
+.status--danger { border-top-color: var(--danger); }
+.status__light { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: var(--cyan-100); color: var(--teal-600); }
+.status--payer .status__light { background: var(--terracotta-100); color: var(--terracotta-500); }
+.status--danger .status__light { background: var(--danger-100); color: var(--danger); }
+.status__light svg { width: 28px; height: 28px; }
+.status__title { font-size: clamp(20px, 2.6vw, 26px); font-weight: 700; margin: 0 0 6px; line-height: 1.25; color: var(--ink); }
+.status__text { margin: 0; color: var(--ink-700); font-size: 16px; }
+.status__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+.mini { background: var(--cyan-050); border-radius: var(--radius-md); padding: 12px 14px; }
+.mini__l { font-size: 13px; color: var(--ink-500); }
+.mini__v { font-size: 18px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.bar { position: relative; height: 12px; border-radius: 6px; background: #EAF1F3; overflow: visible; margin: 34px 0 30px; }
+.bar__fill { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--teal-600), var(--cyan-500)); width: 0; transition: width .4s var(--ease-out); }
+.bar__fill.is-over { background: linear-gradient(90deg, var(--teal-600) 0%, var(--cyan-500) 60%, var(--terracotta-500) 100%); }
+.bar__mark { position: absolute; top: -8px; bottom: -8px; width: 2px; background: var(--terracotta-500); transition: left .4s var(--ease-out); }
+.bar__mark span { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 12px; font-weight: 600; color: var(--terracotta-500); }
+.bar__now { position: absolute; top: 100%; margin-top: 8px; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: var(--teal-600); white-space: nowrap; transition: left .4s var(--ease-out); }
+
+.panel { background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 24px 26px; }
+.panel__head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+.panel__head .h3 { margin: 0; }
+
+.res-tbl { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+.res-tbl th, .res-tbl td { padding: 10px 12px; border-bottom: 1px solid var(--hairline); text-align: right; white-space: nowrap; }
+.res-tbl th:first-child, .res-tbl td:first-child { text-align: left; white-space: normal; min-width: 210px; }
+.res-tbl thead th { font-size: 13px; color: var(--ink-500); font-weight: 600; background: var(--cyan-050); }
+.res-tbl tr.grp td { background: #FAFCFD; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--teal-600); font-weight: 700; text-align: left; }
+.res-tbl tr.total td { font-weight: 700; color: var(--ink); }
+.res-tbl tr.pay td { font-weight: 700; color: var(--teal-600); }
+.res-tbl td.has-tip { cursor: help; outline-offset: -2px; }
+.res-tbl td.has-tip span { border-bottom: 1.5px dashed var(--cyan-400); padding-bottom: 1px; transition: color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out); }
+.res-tbl td.has-tip:hover span, .res-tbl td.has-tip:focus span { color: var(--teal-600); border-bottom-color: var(--terracotta-500); }
+.tip {
+  position: fixed; left: 0; top: 0; z-index: 80; width: max-content; max-width: min(360px, calc(100vw - 16px));
+  background: #fff; border: 1px solid var(--hairline); border-radius: var(--radius-md);
+  box-shadow: 0 18px 44px rgba(0,138,170,.22); padding: 0;
+  display: flex; flex-direction: column; overflow: hidden;
+  font-size: 14px; line-height: 1.45; color: var(--ink-700);
+  opacity: 0; visibility: hidden; transform: translateY(6px); pointer-events: none;
+  transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out), visibility 0s linear var(--dur);
+}
+.tip.is-on { opacity: 1; visibility: visible; transform: none; pointer-events: auto; transition-delay: 0s; }
+.tip.is-pinned { border-color: var(--cyan-400); }
+.tip__body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 14px 40px 14px 16px; scrollbar-width: thin; scrollbar-color: var(--cyan-400) transparent; }
+.tip__body::-webkit-scrollbar { width: 6px; }
+.tip__body::-webkit-scrollbar-thumb { background: var(--cyan-400); border-radius: 3px; }
+.tip__x { position: absolute; top: 6px; right: 6px; width: 30px; height: 30px; border: none; border-radius: 8px; background: transparent; color: var(--ink-300); font-size: 20px; line-height: 1; cursor: pointer; transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out); z-index: 1; }
+.tip__x:hover { background: var(--cyan-050); color: var(--teal-600); }
+.tip__more { display: none; flex: none; border: none; border-top: 1px solid var(--hairline); background: var(--cyan-050); color: var(--teal-600); font: 600 13px/1 var(--font-sans); padding: 11px; cursor: pointer; transition: background var(--dur) var(--ease-out); }
+.tip__more:hover { background: var(--cyan-100); }
+.tip.has-more .tip__more { display: block; }
+.tip__ul { margin: 4px 0 0; padding-left: 18px; }
+.tip__ul li { margin: 0 0 8px; }
+.tip__ul b { color: var(--ink); }
+.info-btn { width: 26px; height: 26px; flex: none; border-radius: 50%; border: none; background: var(--cyan-100); color: var(--teal-600); font: 700 14px/1 var(--font-sans); cursor: pointer; transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out), transform var(--dur) var(--ease-out); }
+.info-btn:hover, .info-btn:focus-visible { background: var(--teal-600); color: #fff; transform: scale(1.08); }
+.step__head { flex-wrap: wrap; }
+.panel__tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.btn-xl { display: inline-flex; align-items: center; gap: 8px; }
+.btn-xl svg { width: 18px; height: 18px; }
+.tip__h { font-weight: 700; color: var(--teal-600); margin-bottom: 6px; }
+.tip__s { font-size: 11.5px; color: var(--ink-500); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; margin: 10px 0 3px; }
+.tip__r { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 3px 0; }
+.tip__r b { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+.tip__r--t { border-top: 1px solid var(--hairline); margin-top: 4px; padding-top: 7px; }
+.tip__r--t span, .tip__r--t b { font-weight: 700; color: var(--ink); }
+.tip__n { font-size: 12.5px; color: var(--ink-500); margin-top: 9px; line-height: 1.45; }
+.res-tbl .tag { display: inline-block; font-size: 11px; font-weight: 600; color: var(--terracotta-500); background: var(--terracotta-100); border-radius: 6px; padding: 1px 6px; margin-left: 4px; }
+
+.chart svg { width: 100%; height: auto; display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; color: var(--ink-700); margin-top: 8px; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+.share { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.share th, .share td { padding: 9px 12px; border-bottom: 1px solid var(--hairline); text-align: right; white-space: nowrap; }
+.share th:first-child, .share td:first-child { text-align: left; }
+.share thead th { font-size: 13px; color: var(--ink-500); font-weight: 600; background: var(--cyan-050); }
+.share td i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; vertical-align: 0; }
+.share td b { display: block; font-size: 15px; color: var(--ink); }
+.share__sum { display: block; font-size: 12px; color: var(--ink-500); }
+.share__rev td { color: var(--ink-500); font-size: 13px; }
+.share__tot td { background: var(--cyan-050); }
+.share__tot td b { color: var(--teal-600); font-size: 16px; }
+.share__tot td:first-child { font-weight: 700; color: var(--teal-600); }
+.share .tag { display: inline-block; font-size: 11px; font-weight: 600; color: var(--terracotta-500); background: var(--terracotta-100); border-radius: 6px; padding: 1px 6px; margin-left: 4px; }
+.cal { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.cal__m { background: var(--cyan-050); border-radius: var(--radius-md); padding: 14px 16px; }
+.cal__mh { display: flex; justify-content: space-between; align-items: baseline; font-weight: 700; color: var(--teal-600); margin-bottom: 8px; gap: 8px; }
+.cal__mh span { color: var(--ink); font-variant-numeric: tabular-nums; font-size: 15px; }
+.cal__i { display: grid; grid-template-columns: 52px 1fr auto; gap: 8px; align-items: baseline; padding: 6px 0; border-top: 1px solid var(--hairline); font-size: 14px; }
+.cal__d { font-weight: 700; color: var(--ink-700); font-variant-numeric: tabular-nums; }
+.cal__t { color: var(--ink-700); line-height: 1.35; }
+.cal__t small { display: block; color: var(--ink-500); font-size: 12px; }
+.cal__a { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cal__dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: 1px; }
+
+.how ol { margin: 0; padding-left: 22px; }
+.how li { margin: 0 0 10px; line-height: 1.6; color: var(--ink-700); }
+.how li b { color: var(--ink); }
+
+/* ---------- Чек-лист ---------- */
+.checklist { counter-reset: ck; display: grid; gap: 14px; list-style: none; padding: 0; margin: 0; }
+.checklist li { counter-increment: ck; background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 18px 22px 18px 70px; position: relative; line-height: 1.55; color: var(--ink-700); transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out); }
+.checklist li:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+.checklist li::before { content: counter(ck); position: absolute; left: 20px; top: 16px; width: 34px; height: 34px; border-radius: 10px; background: var(--terracotta-100); color: var(--terracotta-500); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.checklist b { color: var(--ink); }
+
+.range { width: 100%; accent-color: var(--teal-600); }
+.cmp { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+.cmp .mini { text-align: center; transition: background var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out); }
+.cmp .mini.is-best { background: var(--teal-600); }
+.cmp .mini.is-best .mini__l, .cmp .mini.is-best .mini__v { color: #fff; }
+
+.disclaimer { background: var(--terracotta-100); border-radius: var(--radius-lg); padding: 24px 28px; display: flex; gap: 18px; align-items: flex-start; margin-top: 30px; }
+.disclaimer p { margin: 0; color: var(--ink-700); line-height: 1.6; }
+.disclaimer b { color: var(--terracotta-500); }
+
+.site-footer { background: var(--teal-600); color: #fff; padding: 28px 0; font-size: 15px; }
+.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.site-footer p { margin: 0; opacity: .92; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+[hidden] { display: none !important; }
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 1020px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .timeline { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 980px) {
+  .grid--2, .grid--3, .faq--2 { grid-template-columns: 1fr; }
+  .services-ring .card:nth-child(3) .ic__ring rect { animation-delay: 5s; }
+  .services-ring .card:nth-child(4) .ic__ring rect { animation-delay: 7.5s; }
+}
+@media (max-width: 900px) {
+  .burger { display: flex; }
+  .nav {
+    position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0;
+    background: #fff; border-bottom: 1px solid var(--hairline); box-shadow: 0 12px 24px rgba(0,138,170,.10);
+    padding: 8px 24px 20px; display: none;
+  }
+  .nav.is-open { display: flex; }
+  .nav a { padding: 14px 0; border-bottom: 1px solid var(--hairline); font-size: 17px; }
+}
+@media (max-width: 640px) {
+  .container { padding: 0 16px; }
+  .section { padding: 60px 0; }
+  .hero { padding: 56px 0 60px; }
+  .hero__actions .btn { width: 100%; }
+  .hero-kpis { grid-template-columns: 1fr; }
+  .card, .step, .panel { padding: 20px; }
+  .card--row { flex-direction: column; gap: 14px; }
+  .section__lead { margin: -18px 0 28px; font-size: 17px; }
+  .status { grid-template-columns: 1fr; padding: 20px; }
+  .status__grid, .cmp { grid-template-columns: 1fr; }
+  .kpis { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi { padding: 14px; }
+  .kpi--main, .kpi:nth-child(4) { grid-column: 1 / -1; }
+  .kpi__v { font-size: 19px; }
+  .kpi--main .kpi__v { font-size: 26px; }
+  .kpi__l { font-size: 13px; }
+  .kpi__s { font-size: 12px; }
+  .swipe-hint { display: block !important; }
+  .timeline { grid-template-columns: repeat(2, 1fr); }
+  .wordmark { font-size: 18px; }
+  .header-tools .seg button { padding: 6px 9px; font-size: 13px; }
+  .disclaimer { flex-direction: column; padding: 20px; }
+  .data-tbl .field__input { min-width: 0; padding: 9px 8px; font-size: 15px; }
+  .data-tbl td { padding: 4px 3px; }
+  .data-tbl th { padding: 0 3px 6px; white-space: normal; }
+  .data-tbl td:first-child { font-size: 13px; white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+@media print {
+  .site-header, .hero__aura, .data-actions, .blocks { display: none !important; }
+  .card, .panel, .step, .kpi, .status { box-shadow: none; border: 1px solid var(--hairline); }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#calc">Перейти к калькулятору</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="wordmark" href="#top" aria-label="Шпаргалка УСН и НДС, наверх">
+      <span class="wordmark__mark" aria-hidden="true"></span>
+      <span><span class="wordmark__a">УСН</span> + НДС</span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Разделы">
+      <a href="#changes">Изменения</a>
+      <a href="#y2027">2027</a>
+      <a href="#abc">Азбука</a>
+      <a href="#calc">Калькулятор</a>
+      <a href="#exceeded">Если превысили</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+    <div class="header-tools">
+      <div class="seg seg--sm" data-key="year" role="group" aria-label="Расчётный год">
+        <button type="button" data-v="2026">2026</button>
+        <button type="button" data-v="2027">2027</button>
+      </div>
+      <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top">
+    <div class="hero__aura" aria-hidden="true">
+      <canvas class="hero__grid"></canvas>
+      <span class="orb orb--teal"></span>
+      <span class="orb orb--cyan"></span>
+      <span class="orb orb--terracotta"></span>
+    </div>
+    <div class="container hero__inner">
+      <h1 class="hero__title rise" style="--d:0ms">УСН и НДС: <span class="grad">полная картина для бизнеса</span></h1>
+      <p class="hero__lead rise" style="--d:120ms">Калькулятор и шпаргалка для ИП и ООО на упрощёнке: с какого числа вы платите НДС, сколько налогов набегает по кварталам и за год, и когда платить. Учтены изменения 2026 года, есть справка по 2027.</p>
+      <div class="hero__actions rise" style="--d:240ms">
+        <a class="btn btn--primary" href="#calc">Открыть калькулятор</a>
+        <a class="btn btn--secondary" href="#changes">Что изменилось</a>
+      </div>
+      <div class="hero-kpis rise" style="--d:360ms">
+        <div class="hero-kpi"><div class="hero-kpi__v" id="hk-thr">20 <small>млн ₽</small></div><div class="hero-kpi__l" id="hk-thr-l">порог дохода для освобождения от НДС</div></div>
+        <div class="hero-kpi"><div class="hero-kpi__v">22%</div><div class="hero-kpi__l">основная ставка НДС с 2026 года (была 20%)</div></div>
+        <div class="hero-kpi"><div class="hero-kpi__v">5% <small>/</small> 7%</div><div class="hero-kpi__l" id="hk-red-l">льготные ставки без вычетов</div></div>
+      </div>
+      <div class="blocks rise" style="--d:480ms" aria-hidden="true">
+        <span class="blocks__b blocks__b--terracotta"></span><span class="blocks__b blocks__b--teal"></span><span class="blocks__b blocks__b--cyan"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ИЗМЕНЕНИЯ 2026 ============ -->
+  <section class="section section--wash" id="changes">
+    <div class="container">
+      <h2 class="h2" data-reveal><span class="h2__mark" aria-hidden="true"></span>Что изменилось в 2026 году</h2>
+      <p class="section__lead" data-reveal>Налоговая реформа (закон № 425-ФЗ от 28.11.2025) сильнее всего затронула упрощенцев: под НДС попали те, кому раньше он не грозил.</p>
+
+      <div class="grid grid--2 services-ring">
+        <article class="card card--row" data-reveal style="--d:0ms">
+          <span class="ic ic--teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg><svg class="ic__ring" viewBox="0 0 60 60"><rect x="1" y="1" width="58" height="58" rx="16" pathLength="100"/></svg></span>
+          <div>
+            <h3 class="card__title">Порог освобождения — 20 млн ₽ вместо 60 млн</h3>
+            <p class="card__text">Без НДС можно работать, только если доход за 2025 год не больше 20 млн ₽ и в 2026 году с начала года доход тоже не превысил 20 млн ₽.</p>
+            <p class="card__text">Превысили — НДС с <b>1-го числа следующего месяца</b>. Заявлений и уведомлений подавать не нужно, всё происходит автоматически.</p>
+          </div>
+        </article>
+        <article class="card card--row" data-reveal style="--d:120ms">
+          <span class="ic ic--terracotta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/><path d="M19 5L5 19"/></svg><svg class="ic__ring" viewBox="0 0 60 60"><rect x="1" y="1" width="58" height="58" rx="16" pathLength="100"/></svg></span>
+          <div>
+            <h3 class="card__title">Основная ставка НДС — 22%</h3>
+            <p class="card__text">Вместо 20%. Расчётная ставка, когда НДС уже «внутри» цены, — 22/122. Ставки 10% и 0% сохранились для тех же товаров и операций.</p>
+            <p class="card__text">Упрощенец может выбрать 22%: тогда входящий НДС от поставщиков принимается к вычету.</p>
+          </div>
+        </article>
+        <article class="card card--row" data-reveal style="--d:0ms">
+          <span class="ic ic--teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg><svg class="ic__ring" viewBox="0 0 60 60"><rect x="1" y="1" width="58" height="58" rx="16" pathLength="100"/></svg></span>
+          <div>
+            <h3 class="card__title">Льготные ставки 5% и 7%</h3>
+            <p class="card__text"><b>5%</b> — при доходе до 272,5 млн ₽, <b>7%</b> — до 490,5 млн ₽. Вычета входящего НДС нет. Если доход превысил 272,5 млн в течение года, с 1-го числа следующего месяца ставка 7%.</p>
+            <p class="card__text">Выбрав 5% или 7%, по общему правилу их применяют 12 кварталов подряд.</p>
+          </div>
+        </article>
+        <article class="card card--row" data-reveal style="--d:120ms">
+          <span class="ic ic--terracotta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 010 7M18.5 14.8c1.7.9 2.7 2.6 3 5.2"/></svg><svg class="ic__ring" viewBox="0 0 60 60"><rect x="1" y="1" width="58" height="58" rx="16" pathLength="100"/></svg></span>
+          <div>
+            <h3 class="card__title">Взносы за сотрудников</h3>
+            <p class="card__text">Льготный тариф МСП (15% с выплат сверх 1,5 МРОТ) оставили только приоритетным отраслям, для обрабатывающих производств — 7,6%. Остальные платят 30% в пределах 2 979 000 ₽ на человека и 15,1% сверх.</p>
+            <p class="card__text">Закон № 104-ФЗ от 25.04.2026 смягчил условие о доле профильных доходов (с 1 января 2026).</p>
+          </div>
+        </article>
+      </div>
+
+      <h3 class="h3" style="margin-top:44px" data-reveal>Ключевые цифры 2026 года</h3>
+      <div class="table-wrap" data-reveal>
+        <table class="facts">
+          <thead><tr><th>Показатель</th><th>Значение</th><th>Что это значит</th></tr></thead>
+          <tbody>
+            <tr><td>Порог освобождения от НДС</td><td class="num">20 млн ₽</td><td>По доходам за 2025 год и нарастающим итогом в 2026 году</td></tr>
+            <tr><td>Ставка НДС 5%</td><td class="num">до 272,5 млн ₽</td><td>250 млн × дефлятор 1,090; без вычетов</td></tr>
+            <tr><td>Ставка НДС 7%</td><td class="num">до 490,5 млн ₽</td><td>450 млн × 1,090; без вычетов</td></tr>
+            <tr><td>Лимит доходов для УСН</td><td class="num">490,5 млн ₽</td><td>Превысили — переход на ОСНО с 1-го числа месяца превышения</td></tr>
+            <tr><td>Ставки УСН</td><td class="num">6% / 15%</td><td>«Доходы» / «Доходы минус расходы»; регион может снизить. Минимальный налог — 1% доходов</td></tr>
+            <tr><td>Взносы ИП за себя</td><td class="num">57 390 ₽ + 1%</td><td>1% с дохода свыше 300 000 ₽, но не больше 321 818 ₽. Фикс — до 28.12.2026, 1% — до 01.07.2027</td></tr>
+            <tr><td>МРОТ / 1,5 МРОТ</td><td class="num">27 093 / 40 639,50 ₽</td><td>Граница для льготных тарифов взносов</td></tr>
+            <tr><td>Единая предельная база взносов</td><td class="num">2 979 000 ₽</td><td>На одного работника за год; сверх неё — 15,1%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2027 ============ -->
+  <section class="section" id="y2027">
+    <div class="container">
+      <h2 class="h2" data-reveal><span class="h2__mark" aria-hidden="true"></span>Что будет в 2027 году: справка</h2>
+      <p class="section__lead" data-reveal>Планировалось, что порог НДС упадёт до 15 млн ₽ уже в 2027 году. Закон № 228-ФЗ от 04.07.2026 заморозил его на уровне 20 млн ₽. Переключите год в шапке, чтобы посчитать 2027 год в калькуляторе.</p>
+
+      <div class="timeline" data-reveal aria-label="Порог освобождения от НДС по годам">
+        <div class="tl tl--old"><div class="tl__y">2025</div><div class="tl__v">60 <small>млн</small></div></div>
+        <div class="tl" data-tl="2026"><div class="tl__y">2026</div><div class="tl__v">20 <small>млн</small></div></div>
+        <div class="tl" data-tl="2027"><div class="tl__y">2027</div><div class="tl__v">20 <small>млн</small></div></div>
+        <div class="tl"><div class="tl__y">2028</div><div class="tl__v">20 <small>млн</small></div></div>
+        <div class="tl"><div class="tl__y">2029</div><div class="tl__v">20 <small>млн</small></div></div>
+        <div class="tl tl--down"><div class="tl__y">2030</div><div class="tl__v">15 <small>млн</small></div></div>
+        <div class="tl tl--down"><div class="tl__y">2031+</div><div class="tl__v">10 <small>млн</small></div></div>
+      </div>
+
+      <div class="table-wrap" data-reveal>
+        <table class="facts">
+          <thead><tr><th>Показатель</th><th>2026</th><th>2027</th><th>Статус</th></tr></thead>
+          <tbody>
+            <tr><td>Порог освобождения от НДС</td><td class="num">20 млн ₽</td><td class="num">20 млн ₽</td><td><span class="chip">принято</span> закон № 228-ФЗ. Доход 2026 года больше 20 млн — НДС с 1 января 2027</td></tr>
+            <tr><td>Основная ставка НДС</td><td class="num">22%</td><td class="num">22%</td><td><span class="chip">без изменений</span></td></tr>
+            <tr><td>Лимит доходов для УСН</td><td class="num">490,5 млн ₽</td><td class="num">≈ 518,85 млн ₽</td><td><span class="chip chip--accent">проект</span> дефлятор 1,153 ещё не утверждён</td></tr>
+            <tr><td>Граница ставки 5%</td><td class="num">272,5 млн ₽</td><td class="num">≈ 288,25 млн ₽</td><td><span class="chip chip--accent">проект</span> тот же дефлятор</td></tr>
+            <tr><td>Фиксированные взносы ИП</td><td class="num">57 390 ₽</td><td class="num">61 154 ₽</td><td><span class="chip">принято</span> ст. 430 НК РФ; срок — 28.12.2027</td></tr>
+            <tr><td>Максимум взноса 1%</td><td class="num">321 818 ₽</td><td class="num">342 923 ₽</td><td><span class="chip">принято</span> срок за 2027 год — 01.07.2028</td></tr>
+            <tr><td>МРОТ</td><td class="num">27 093 ₽</td><td class="num">≈ 28 935 ₽</td><td><span class="chip chip--accent">законопроект</span></td></tr>
+            <tr><td>Единая предельная база взносов</td><td class="num">2 979 000 ₽</td><td class="num">уточняется</td><td><span class="chip chip--muted">ждём постановление</span> в калькуляторе пока стоит значение 2026 года</td></tr>
+            <tr><td>Лимит дохода для патента (ПСН)</td><td class="num">20 млн ₽</td><td class="num">15 млн ₽</td><td><span class="chip">принято</span> закон № 425-ФЗ; с 2028 года — 10 млн ₽</td></tr>
+            <tr><td>Транспортный и земельный налог организаций</td><td class="num">до 28 февраля</td><td class="num">до 28 марта</td><td><span class="chip">принято</span> закон № 425-ФЗ</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note" data-reveal>Данные на 12.11.2026. Значения с пометкой «проект» калькулятор использует как предварительные — после утверждения их достаточно поменять в одном месте кода (<code>CONFIG</code>).</p>
+    </div>
+  </section>
+
+  <div class="blocks blocks--sep" aria-hidden="true"><span class="blocks__b blocks__b--terracotta"></span><span class="blocks__b blocks__b--teal"></span><span class="blocks__b blocks__b--cyan"></span></div>
+
+  <!-- ============ АЗБУКА ============ -->
+  <section class="section section--wash" id="abc">
+    <div class="container">
+      <h2 class="h2" data-reveal><span class="h2__mark" aria-hidden="true"></span>Азбука: 10 понятий, без которых не разобраться</h2>
+      <p class="section__lead" data-reveal>Нажмите на вопрос, чтобы раскрыть объяснение с примером.</p>
+      <div class="faq faq--2">
+        <details class="qa" data-reveal><summary>Что такое НДС и кто его платит</summary><div class="qa__body"><p>НДС — налог, который продавец добавляет к цене и перечисляет в бюджет. Фактически его оплачивает покупатель, а продавец собирает и сдаёт отчёт.</p><p class="qa__ex">Цена услуги 100 000 ₽ + НДС 5% = 105 000 ₽. В бюджет уходит 5 000 ₽, ваш доход по УСН — 100 000 ₽.</p></div></details>
+        <details class="qa" data-reveal><summary>Освобождение от НДС на УСН</summary><div class="qa__body"><p>Действует автоматически, без заявлений: пока доход за прошлый год и с начала текущего года не превысил порог (20 млн ₽ в 2026–2027 годах).</p><p>При освобождении вы не начисляете НДС и не сдаёте декларацию по НДС. Исключения — ввоз товаров, работа налоговым агентом и счёт-фактура с выделенным НДС, выставленный по ошибке.</p></div></details>
+        <details class="qa" data-reveal><summary>Какой доход сравнивают с порогом</summary><div class="qa__body"><p>Все доходы из КУДиР кассовым методом: поступления от покупателей, в том числе авансы, и внереализационные доходы. Сам НДС в доход не входит.</p><p>Если вы совмещаете УСН и патент, доходы суммируются.</p></div></details>
+        <details class="qa" data-reveal><summary>Входящий НДС и вычет</summary><div class="qa__body"><p>Входящий НДС — налог в цене того, что вы купили у поставщиков-плательщиков НДС.</p><p>При ставке <b>22%</b> его можно вычесть из своего НДС. При <b>5% и 7%</b> вычета нет: входящий НДС остаётся в стоимости покупок, а на «Доходы минус расходы» попадает в расходы.</p><p class="qa__ex">Продали на 1 220 000 ₽ с НДС 22% (НДС 220 000 ₽), купили на 610 000 ₽ с НДС (НДС 110 000 ₽). К уплате 220 000 − 110 000 = 110 000 ₽.</p></div></details>
+        <details class="qa" data-reveal><summary>Нарастающий итог</summary><div class="qa__body"><p>Суммы с начала года: за 3, 6, 9 и 12 месяцев. Налог по УСН считается именно так, а каждый авансовый платёж — это разница между налогом за текущий и за прошлый период.</p><p class="qa__ex">Доход за 3 месяца — 6 млн, за 6 месяцев — 13 млн. Значит, за II квартал — 7 млн.</p></div></details>
+        <details class="qa" data-reveal><summary>Авансовые платежи по УСН</summary><div class="qa__body"><p>Платятся по итогам I квартала, полугодия и 9 месяцев — до 28 апреля, 28 июля и 28 октября. Налог за год: организации — до 28 марта, ИП — до 28 апреля следующего года.</p></div></details>
+        <details class="qa" data-reveal><summary>Минимальный налог</summary><div class="qa__body"><p>Действует только на «Доходы минус расходы»: по итогам года налог не может быть меньше 1% от доходов, даже если был убыток.</p><p class="qa__ex">Доходы 30 млн, расходы 29,5 млн. Обычный налог 15% × 0,5 млн = 75 000 ₽, минимальный — 300 000 ₽. Платить нужно 300 000 ₽.</p></div></details>
+        <details class="qa" data-reveal><summary>Уменьшение налога на взносы</summary><div class="qa__body"><p>На «Доходах» налог уменьшают на страховые взносы: ИП без сотрудников — до 100% (налог может стать нулевым), ИП с сотрудниками и организации — не больше чем наполовину.</p><p>На «Доходы минус расходы» взносы не уменьшают налог, а включаются в расходы.</p></div></details>
+        <details class="qa" data-reveal><summary>ЕНП и уведомления</summary><div class="qa__body"><p>Все налоги платятся одной платёжкой на единый налоговый счёт. Чтобы налоговая знала, что списать, до 25-го числа подают уведомление об исчисленных суммах: по авансам УСН, взносам и НДФЛ.</p><p>По НДС уведомление не нужно: сумма видна из декларации.</p></div></details>
+        <details class="qa" data-reveal><summary>Счёт-фактура и книга продаж</summary><div class="qa__body"><p>Плательщик НДС выставляет счёт-фактуру в течение 5 календарных дней после отгрузки или получения аванса и регистрирует её в книге продаж. При 22% ведут ещё и книгу покупок, чтобы заявить вычеты.</p><p>Декларацию по НДС сдают только электронно — до 25-го числа месяца после квартала.</p></div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ КАЛЬКУЛЯТОР ============ -->
+  <section class="section" id="calc">
+    <div class="container">
+      <h2 class="h2" data-reveal><span class="h2__mark" aria-hidden="true"></span>Калькулятор УСН и НДС</h2>
+      <p class="section__lead" data-reveal>Заполните четыре шага — результаты пересчитываются сразу. Данные остаются только в вашем браузере.</p>
+
+      <div class="calc">
+        <!-- Шаг 1 -->
+        <div class="step" data-reveal>
+          <div class="step__head"><span class="step__n">1</span><h3 class="step__t">Кто вы и какой объект УСН</h3></div>
+          <div class="ctrls">
+            <div class="field"><span class="field__label">Расчётный год</span>
+              <div class="seg" data-key="year" role="group" aria-label="Расчётный год"><button type="button" data-v="2026">2026</button><button type="button" data-v="2027">2027</button></div>
+              <span class="field__hint" id="year-hint"></span>
+            </div>
+            <div class="field"><span class="field__label">Форма бизнеса</span>
+              <div class="seg" data-key="form" role="group" aria-label="Форма бизнеса"><button type="button" data-v="ip">ИП</button><button type="button" data-v="ooo">ООО</button></div>
+            </div>
+            <div class="field"><span class="field__label">Объект налогообложения <span class="hint" tabindex="0" data-tip="«Доходы» — налог с выручки. «Доходы минус расходы» — с прибыли, но не меньше 1% доходов.">?</span></span>
+              <div class="seg" data-key="obj" role="group" aria-label="Объект УСН"><button type="button" data-v="d">Доходы</button><button type="button" data-v="dr">Доходы минус расходы</button></div>
+            </div>
+            <div class="field" data-show="obj:d"><label class="field__label" for="rateD">Ставка УСН «Доходы», %</label>
+              <input class="field__input" id="rateD" data-num="rateD" inputmode="decimal" style="max-width:120px">
+              <span class="field__hint">Обычно 6%; проверьте региональную льготу</span>
+            </div>
+            <div class="field" data-show="obj:dr"><label class="field__label" for="rateDR">Ставка УСН «Д−Р», %</label>
+              <input class="field__input" id="rateDR" data-num="rateDR" inputmode="decimal" style="max-width:120px">
+              <span class="field__hint">Обычно 15%; регион может снизить до 5%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Шаг 2 -->
+        <div class="step" data-reveal>
+          <div class="step__head"><span class="step__n">2</span><h3 class="step__t">НДС</h3></div>
+          <div class="ctrls">
+            <div class="field"><label class="field__label" for="prevIncome"><span id="prev-label">Доход за 2025 год, ₽</span> <span class="hint" tabindex="0" data-tip="Если доход за прошлый год больше порога, НДС платится с 1 января.">?</span></label>
+              <input class="field__input" id="prevIncome" data-num="prevIncome" inputmode="decimal" placeholder="например, 15 000 000">
+            </div>
+            <div class="field field--wide"><span class="field__label">Режим НДС <span class="hint" tabindex="0" data-tip="«Авто»: калькулятор сам определит по порогу, с какого месяца вы плательщик. Остальные варианты — если ставка уже выбрана.">?</span></span>
+              <div class="seg" data-key="vatMode" role="group" aria-label="Режим НДС"><button type="button" data-v="auto">Авто</button><button type="button" data-v="none">Без НДС</button><button type="button" data-v="5">5%</button><button type="button" data-v="7">7%</button><button type="button" data-v="22">22%</button></div>
+            </div>
+            <div class="field" data-show="vatMode:auto"><span class="field__label">Если стану плательщиком, ставка</span>
+              <div class="seg seg--sm" data-key="autoKind" role="group"><button type="button" data-v="reduced">5% / 7% без вычетов</button><button type="button" data-v="general">22% с вычетами</button></div>
+            </div>
+            <div class="field" data-show="vatMode:auto,5,7,22"><label class="field__label" for="vatStart">НДС плачу с месяца <span class="hint" tabindex="0" data-tip="По умолчанию месяц определяется по порогу. Если вы точно знаете дату — выберите её.">?</span></label>
+              <select class="field__input" id="vatStart" data-sel="vatStart"></select>
+            </div>
+            <div class="field" data-show="vatMode:auto,5,7,22"><span class="field__label">Как НДС в ваших ценах <span class="hint" tabindex="0" data-tip="«Внутри» — поступления не меняются, НДС выделяется из них. «Сверху» — вы подняли цены на ставку НДС; в поля вводите выручку без НДС.">?</span></span>
+              <div class="seg seg--sm" data-key="pricing" role="group"><button type="button" data-v="inside">Внутри поступлений</button><button type="button" data-v="top">Сверху цены</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Шаг 3 -->
+        <div class="step" data-reveal>
+          <div class="step__head"><span class="step__n">3</span><h3 class="step__t">Сотрудники</h3>
+            <button type="button" class="info-btn has-tip" data-tip-key="staff" aria-label="Зачем указывать сотрудников">?</button>
+            <span class="field__hint">Зачем это нужно и на что влияет</span>
+          </div>
+          <div class="ctrls">
+            <div class="field"><span class="field__label">Есть сотрудники?</span>
+              <div class="seg" data-key="staff" role="group" aria-label="Сотрудники"><button type="button" data-v="no">Нет</button><button type="button" data-v="yes">Есть</button></div>
+              <span class="field__hint" data-show="form:ip;staff:no">ИП без сотрудников уменьшает налог «Доходы» на взносы до 100%</span>
+            </div>
+            <div class="field" data-show="staff:yes"><span class="field__label">Зарплата</span>
+              <div class="seg seg--sm" data-key="payMode" role="group" aria-label="Как вводить зарплату"><button type="button" data-v="same">Одинаковая каждый месяц</button><button type="button" data-v="month">Помесячно</button></div>
+            </div>
+            <div class="field" data-show="staff:yes"><label class="field__label" for="staffCount">Количество человек</label>
+              <input class="field__input" id="staffCount" data-num="staffCount" inputmode="numeric" style="max-width:120px">
+              <span class="field__hint" data-show="payMode:month">Нужно, чтобы применить предельную базу взносов и порог НДФЛ к каждому работнику</span>
+            </div>
+            <div class="field" data-show="staff:yes;payMode:same"><label class="field__label" for="salary">Средняя зарплата в месяц, ₽</label>
+              <input class="field__input" id="salary" data-num="salary" inputmode="decimal">
+              <span class="field__hint">До вычета НДФЛ, на одного человека</span>
+            </div>
+            <div class="field" data-show="staff:yes"><label class="field__label" for="tariff">Тариф взносов</label>
+              <select class="field__input" id="tariff" data-sel="tariff">
+                <option value="general">Общий: 30% до 2 979 000 ₽, 15,1% сверх</option>
+                <option value="msp">МСП приоритетной отрасли: 30% до 1,5 МРОТ, 15% сверх</option>
+                <option value="manuf">МСП, обрабатывающее производство: 7,6% сверх 1,5 МРОТ</option>
+              </select>
+            </div>
+            <div class="field" data-show="staff:yes"><label class="field__label" for="ns">Взносы на травматизм, %</label>
+              <input class="field__input" id="ns" data-num="ns" inputmode="decimal" style="max-width:120px">
+              <span class="field__hint">0,2% для большинства офисных видов деятельности</span>
+            </div>
+          </div>
+          <div data-show="staff:yes;payMode:month" style="margin-top:18px">
+            <p class="field__hint" style="margin:0 0 10px">Начисленная зарплата всех сотрудников за месяц (до вычета НДФЛ): оклады, премии, отпускные, больничные за счёт работодателя. Пустые месяцы — без выплат.</p>
+            <div class="data-actions" style="margin:0 0 14px">
+              <button type="button" class="btn btn--secondary btn--sm" id="btn-pay-fill">Заполнить все месяцы как январь</button>
+            </div>
+            <div style="overflow-x:auto"><table class="data-tbl" id="pay-tbl"></table></div>
+          </div>
+          <div id="staff-notes"></div>
+        </div>
+
+        <!-- Шаг 4 -->
+        <div class="step" data-reveal>
+          <div class="step__head"><span class="step__n">4</span><h3 class="step__t">Доходы и расходы</h3></div>
+          <div class="ctrls" style="margin-bottom:16px">
+            <div class="field"><span class="field__label">Как вводить</span>
+              <div class="seg" data-key="input" role="group" aria-label="Способ ввода"><button type="button" data-v="quarter">Поквартально нарастающим итогом</button><button type="button" data-v="month">Помесячно</button></div>
+            </div>
+          </div>
+          <p class="field__hint" id="input-hint" style="margin:0 0 12px"></p>
+          <div style="overflow-x:auto"><table class="data-tbl" id="data-tbl"></table></div>
+          <div id="input-notes"></div>
+          <div class="data-actions">
+            <button type="button" class="btn btn--secondary btn--sm" id="btn-even" data-show="input:month">Заполнить равномерно из годовой суммы</button>
+            <button type="button" class="btn btn--secondary btn--sm" id="btn-example">Пример</button>
+            <button type="button" class="btn btn--secondary btn--sm" id="btn-reset">Очистить</button>
+          </div>
+        </div>
+
+        <!-- Результаты -->
+        <div class="results" id="results" aria-live="polite">
+          <div class="status" id="status" data-reveal></div>
+
+          <div class="kpis" data-reveal>
+            <div class="kpi kpi--main"><div class="kpi__l">Всего платежей за год</div><div class="kpi__v" id="k-total">0 ₽</div><div class="kpi__s" id="k-total-s"></div></div>
+            <div class="kpi"><div class="kpi__l"><span class="kpi__dot" style="background:var(--teal-600)"></span>Налог УСН</div><div class="kpi__v" id="k-usn">0 ₽</div><div class="kpi__s" id="k-usn-s"></div></div>
+            <div class="kpi"><div class="kpi__l"><span class="kpi__dot" style="background:var(--terracotta-500)"></span>НДС</div><div class="kpi__v" id="k-vat">0 ₽</div><div class="kpi__s" id="k-vat-s"></div></div>
+            <div class="kpi"><div class="kpi__l"><span class="kpi__dot" style="background:var(--cyan-500)"></span>Страховые взносы</div><div class="kpi__v" id="k-ins">0 ₽</div><div class="kpi__s" id="k-ins-s"></div></div>
+          </div>
+
+          <div class="panel" data-reveal>
+            <div class="panel__head"><h3 class="h3">Доход нарастающим итогом и порог НДС</h3></div>
+            <div class="chart" id="chart-inc"></div>
+            <div class="legend" id="legend-inc"></div>
+          </div>
+
+          <div class="panel" data-reveal>
+            <div class="panel__head">
+              <h3 class="h3">Расчёт налогов</h3>
+              <div class="panel__tools">
+                <div class="seg seg--sm" data-key="view" role="group" aria-label="Вид таблицы"><button type="button" data-v="cum">Нарастающим итогом</button><button type="button" data-v="q">По кварталам</button></div>
+                <button type="button" class="btn btn--primary btn--sm btn-xl" id="xl-tax"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Скачать в Excel</button>
+              </div>
+            </div>
+            <p class="field__hint" style="margin:-4px 0 12px">Суммы с пунктирным подчёркиванием можно навести мышкой или нажать — появится расшифровка, как они посчитаны.</p>
+            <p class="field__hint swipe-hint" style="display:none;margin:0 0 8px;color:var(--teal-600);font-weight:600">← Таблицу можно листать вбок →</p>
+            <div style="overflow-x:auto"><table class="res-tbl" id="res-tbl"></table></div>
+            <div id="res-notes"></div>
+          </div>
+
+          <div class="panel" data-reveal>
+            <div class="panel__head"><h3 class="h3">Начислено нарастающим итогом: 3, 6, 9, 12 месяцев</h3></div>
+            <div class="chart" id="chart-q"></div>
+            <div class="legend"><span><i style="background:var(--teal-600)"></i>УСН</span><span><i style="background:var(--terracotta-500)"></i>НДС</span><span><i style="background:var(--cyan-500)"></i>Взносы</span><span style="color:var(--ink-500)">Проценты — доля от выручки (поступлений) с начала года</span></div>
+            <p class="field__hint swipe-hint" style="display:none;margin:14px 0 0;color:var(--teal-600);font-weight:600">← Таблицу можно листать вбок →</p>
+            <div style="overflow-x:auto;margin-top:16px"><div id="q-share"></div></div>
+          </div>
+
+          <div class="panel" data-reveal>
+            <div class="panel__head"><div><h3 class="h3">Платёжный календарь</h3><span class="field__hint">Даты с учётом переноса с выходных; праздники не учтены</span></div>
+              <button type="button" class="btn btn--primary btn--sm btn-xl" id="xl-cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Скачать в Excel</button></div>
+            <div class="cal" id="cal"></div>
+            <p class="note">До 25-го числа месяца платежа подавайте уведомление по авансам УСН, взносам и НДФЛ — если декларация по ним ещё не сдана.</p>
+          </div>
+
+          <details class="qa" data-reveal open>
+            <summary>Как посчитано — по шагам на ваших цифрах</summary>
+            <div class="qa__body how" id="how"></div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ЕСЛИ ПРЕВЫСИЛИ ============ -->
+  <section class="section section--wash" id="exceeded">
+    <div class="container">
+      <h2 class="h2" data-reveal><span class="h2__mark" aria-hidden="true"></span>Превысили порог: что делать по шагам</h2>
+      <p class="section__lead" data-reveal>Памятка на первый месяц работы с НДС.</p>
+      <ol class="checklist">
+        <li data-reveal><b>Определите дату начала.</b> НДС начисляется с 1-го числа месяца, следующего за месяцем превышения. Если порог превышен по итогам прошлого года — с 1 января.</li>
+        <li data-reveal><b>Выберите ставку.</b> 5% или 7% без вычетов (по общему правилу 12 кварталов подряд) либо 22% с вычетами. Закрепите выбор в учётной политике или приказе — налоговая увидит его в первой декларации.</li>
+        <li data-reveal><b>Проверьте договоры и цены.</b> Формулировка «НДС не облагается» больше не подходит. Нужно «в том числе НДС …%» или «НДС начисляется сверх цены». С действующими покупателями — допсоглашения.</li>
+        <li data-reveal><b>Настройте учёт и кассу.</b> Ставка НДС в программе учёта и в чеках онлайн-кассы, счета-фактуры в течение 5 дней после отгрузки или аванса, книга продаж (при 22% — и книга покупок).</li>
+        <li data-reveal><b>Исключайте НДС из доходов УСН.</b> Доход по УСН — поступления за минусом НДС. Это уменьшает и налог УСН, и базу для 1% взносов ИП.</li>
+        <li data-reveal><b>Сдавайте декларацию и платите вовремя.</b> Декларация — электронно до 25-го числа месяца после квартала. Налог — тремя равными частями до 28-го числа каждого из трёх следующих месяцев.</li>
+        <li data-reveal><b>Следите за следующими порогами.</b> <span class="js-r5">272,5 млн ₽</span> — переход с 5% на 7%; <span class="js-usn">490,5 млн ₽</span> — потеря права на УСН.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ 5 ИЛИ 22 ============ -->
+  <section class="section" id="compare">
+    <div class="container">
+      <h2 class="h2" data-reveal><span class="h2__mark" aria-hidden="true"></span>5% или 22%: что выгоднее</h2>
+      <p class="section__lead" data-reveal>Всё решает доля покупок с входящим НДС 22%. При 22% к уплате: выручка × 22/122 − входящий НДС. При 5%: выручка × 5/105, вычетов нет.</p>
+      <div class="grid grid--2">
+        <div class="card card--static" data-reveal>
+          <h3 class="card__title">Попробуйте</h3>
+          <div class="field"><label class="field__label" for="cmp-rev">Выручка за год с НДС, ₽</label><input class="field__input" id="cmp-rev" inputmode="decimal" value="30 000 000"></div>
+          <div class="field" style="margin-top:14px"><label class="field__label" for="cmp-share">Покупки с НДС 22% — <span id="cmp-share-v">40%</span> от выручки</label><input class="range" type="range" id="cmp-share" min="0" max="100" step="1" value="40"></div>
+          <div class="cmp" id="cmp-out"></div>
+        </div>
+        <div class="card card--static" data-reveal>
+          <h3 class="card__title">Точка безубыточности</h3>
+          <p class="card__text">22% выгоднее 5%, если покупки с НДС 22% составляют больше <b>≈ 73,6%</b> выручки. По сравнению с 7% — больше <b>≈ 63,7%</b>.</p>
+          <p class="card__text">Обычно 22% выбирают торговля с большой наценкой на закупку и те, чьи покупатели — плательщики НДС: им важен вычет, и с ставкой 5% вы можете проиграть в цене.</p>
+          <p class="card__text">Для «Доходы минус расходы» учтите: при 5% и 7% входящий НДС уменьшает налог УСН через расходы.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="section section--wash" id="faq">
+    <div class="container">
+      <h2 class="h2" data-reveal><span class="h2__mark" aria-hidden="true"></span>Частые вопросы</h2>
+      <div class="faq">
+        <details class="qa" data-reveal><summary>Нужно ли сообщать в налоговую, что я превысил порог?</summary><div class="qa__body"><p>Нет. Освобождение заканчивается автоматически, а выбранную ставку налоговая увидит в первой декларации по НДС.</p></div></details>
+        <details class="qa" data-reveal><summary>Порог превышен в декабре — когда начинать платить?</summary><div class="qa__body"><p>С 1 января следующего года. Причём весь следующий год вы будете плательщиком НДС: доход за прошлый год уже больше порога.</p></div></details>
+        <details class="qa" data-reveal><summary>Включать ли НДС в доходы по УСН?</summary><div class="qa__body"><p>Нет. Доходы по УСН определяются без учёта НДС, предъявленного покупателям (ст. 346.15 НК РФ). Поэтому калькулятор вычитает НДС из поступлений.</p></div></details>
+        <details class="qa" data-reveal><summary>Начислять ли НДС с авансов?</summary><div class="qa__body"><p>Да. Плательщик НДС начисляет налог на более раннюю из дат: отгрузки или получения оплаты. При ставках 5% и 7% — тоже.</p></div></details>
+        <details class="qa" data-reveal><summary>Можно ли снова освободиться от НДС?</summary><div class="qa__body"><p>Да, если доход за год не превысит порог следующего года (в 2027 году — 20 млн ₽). Если вы применяли 5% или 7%, проверьте требование о 12 кварталах по актуальным разъяснениям ФНС.</p></div></details>
+        <details class="qa" data-reveal><summary>Почему у меня в расчёте «прогноз»?</summary><div class="qa__body"><p>Если вы заполнили не все периоды, калькулятор продолжает ряд средним доходом за заполненные месяцы. Так видно, когда вы, скорее всего, превысите порог. Прогнозные суммы выделены серым курсивом.</p></div></details>
+        <details class="qa" data-reveal><summary>Какие допущения в калькуляторе?</summary><div class="qa__body"><p>Взносы за сотрудников за месяц уменьшают налог «Доходы» в периоде, когда наступает срок их уплаты (28-е число следующего месяца), поэтому взносы за декабрь переходят на следующий год.</p><p>Фиксированные взносы ИП учитываются с I квартала, взнос 1% — по итогам года. На «Доходы минус расходы» фиксированные взносы ИП идут в расходы равными долями по кварталам.</p><p>НДФЛ сотрудников — 13%, с дохода работника свыше 2,4 млн ₽ за год — 15%. При помесячном вводе зарплаты предельная база и порог НДФЛ считаются на среднего работника (ФОТ / численность). Внутри квартала доход распределяется равномерно. Дата превышения порога при поквартальном вводе — приблизительная.</p></div></details>
+      </div>
+      <div class="disclaimer" data-reveal>
+        <span class="ic ic--terracotta" style="background:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg></span>
+        <p><b>Расчёт справочный.</b> Он помогает понять порядок цифр и сроки, но не заменяет проверку по Налоговому кодексу и данным вашего учёта. Нормы актуальны на 12.11.2026: закон № 425-ФЗ от 28.11.2025, № 228-ФЗ от 04.07.2026, № 104-ФЗ от 25.04.2026.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>Шпаргалка УСН + НДС · данные на 12.11.2026</p>
+    <p><a href="#top" style="color:#fff">Наверх ↑</a></p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   КОНФИГУРАЦИЯ ПО ГОДАМ — меняйте цифры здесь
+   confirmed:false → значение предварительное, в интерфейсе помечается
+   ============================================================ */
+const CONFIG = {
+  2026: {
+    vatThreshold: 20e6, vatThresholdNext: 20e6,
+    r5Limit: 272.5e6, usnLimit: 490.5e6, limitsConfirmed: true,
+    ipFixed: 57390, ip1Max: 321818, ip1Due: [2027, 6, 1],
+    mrot: 27093, baseLimit: 2979000, mrotConfirmed: true, baseConfirmed: true
+  },
+  2027: {
+    vatThreshold: 20e6, vatThresholdNext: 20e6,          // закон № 228-ФЗ от 04.07.2026
+    r5Limit: 288.25e6, usnLimit: 518.85e6, limitsConfirmed: false, // проект дефлятора 1,153
+    ipFixed: 61154, ip1Max: 342923, ip1Due: [2028, 6, 1],
+    mrot: 28935, baseLimit: 2979000, mrotConfirmed: false, baseConfirmed: false
+  }
+};
+const RATE_MIN_TAX = 0.01;
+const NDFL = 0.13;
+
+const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const MONTHS_GEN = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const MONTHS_PREP = ['январе','феврале','марте','апреле','мае','июне','июле','августе','сентябре','октябре','ноябре','декабре'];
+const PERIODS = ['3 месяца','6 месяцев','9 месяцев','12 месяцев'];
+const PERIODS_SHORT = ['I кв.','Полугодие','9 мес.','Год'];
+const QNAMES = ['I кв.','II кв.','III кв.','IV кв.'];
+
+/* ---------- Состояние ---------- */
+const STORE_KEY = 'usn-nds-calc-v1';
+const EXAMPLE = {
+  year: 2026, form: 'ip', obj: 'd', rateD: 6, rateDR: 15,
+  staff: 'no', staffCount: 2, salary: 60000, tariff: 'general', ns: 0.2,
+  payMode: 'same', pay: { n: Array(12).fill(null), fot: Array(12).fill(null) },
+  prevIncome: 15000000, vatMode: 'auto', autoKind: 'reduced', vatStart: 'auto', pricing: 'inside',
+  input: 'quarter', view: 'cum',
+  q: { rev: [6e6, 13e6, 21e6, 30e6], exp: [null, null, null, null], iv: [null, null, null, null] },
+  m: { rev: Array(12).fill(null), exp: Array(12).fill(null), iv: Array(12).fill(null) }
+};
+const clone = (o) => JSON.parse(JSON.stringify(o));
+let state = clone(EXAMPLE);
+try {
+  const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+  if (saved && saved.q && saved.m) state = Object.assign(clone(EXAMPLE), saved);
+} catch (e) { /* хранилище недоступно — работаем без него */ }
+if (!CONFIG[state.year]) state.year = 2026;
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+
+/* ---------- Форматирование ---------- */
+const nf0 = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
+const nf2 = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 });
+const rub = (n) => nf0.format(Math.round(n || 0)) + ' ₽';
+const mln = (n) => nf2.format(Math.round((n || 0) / 1e4) / 100) + ' млн ₽';
+const pct = (n) => nf2.format(n) + '%';
+function parseNum(v) {
+  if (v === null || v === undefined) return null;
+  const s = String(v).replace(/[\s ₽]/g, '').replace(',', '.');
+  if (s === '') return null;
+  const n = parseFloat(s);
+  return isFinite(n) ? n : null;
+}
+const fmtInput = (n) => (n === null || n === undefined || n === '') ? '' : nf2.format(n);
+
+/* ============================================================
+   РАСЧЁТНОЕ ЯДРО
+   ============================================================ */
+function buildMonths(s) {
+  // Возвращает 12 месяцев: поступления, расходы, входящий НДС; флаги прогноза.
+  const rev = Array(12).fill(0), exp = Array(12).fill(0), iv = Array(12).fill(0), fc = Array(12).fill(false);
+  const errors = [];
+  let filled = 0;
+  if (s.input === 'quarter') {
+    const cum = s.q.rev.map(parseNum);
+    let k = 0; while (k < 4 && cum[k] !== null) k++;
+    filled = k * 3;
+    const cumOf = (arr, i) => { let last = 0; for (let j = 0; j <= i; j++) { const v = parseNum(arr[j]); if (v !== null) last = v; } return last; };
+    for (let qi = 0; qi < 4; qi++) {
+      let r, e, v;
+      if (qi < k) {
+        r = cum[qi] - (qi ? cum[qi - 1] : 0);
+        if (r < 0) errors.push(['rev', qi]);
+        e = cumOf(s.q.exp, qi) - (qi ? cumOf(s.q.exp, qi - 1) : 0);
+        if (e < 0) errors.push(['exp', qi]);
+        v = cumOf(s.q.iv, qi) - (qi ? cumOf(s.q.iv, qi - 1) : 0);
+        if (v < 0) errors.push(['iv', qi]);
+      } else if (k > 0) {
+        r = cum[k - 1] / k; e = cumOf(s.q.exp, k - 1) / k; v = cumOf(s.q.iv, k - 1) / k;
+      } else { r = 0; e = 0; v = 0; }
+      for (let j = 0; j < 3; j++) {
+        const m = qi * 3 + j;
+        rev[m] = Math.max(0, r) / 3; exp[m] = Math.max(0, e) / 3; iv[m] = Math.max(0, v) / 3;
+        fc[m] = qi >= k && k > 0;
+      }
+    }
+  } else {
+    let last = -1;
+    for (let m = 0; m < 12; m++) if (parseNum(s.m.rev[m]) !== null) last = m;
+    filled = last + 1;
+    let sr = 0, se = 0, sv = 0;
+    for (let m = 0; m <= last; m++) {
+      rev[m] = Math.max(0, parseNum(s.m.rev[m]) || 0);
+      exp[m] = Math.max(0, parseNum(s.m.exp[m]) || 0);
+      iv[m] = Math.max(0, parseNum(s.m.iv[m]) || 0);
+      sr += rev[m]; se += exp[m]; sv += iv[m];
+    }
+    if (filled > 0) for (let m = filled; m < 12; m++) { rev[m] = sr / filled; exp[m] = se / filled; iv[m] = sv / filled; fc[m] = true; }
+  }
+  return { rev, exp, iv, fc, filled, errors };
+}
+
+function employeeMonth(s, C) {
+  // Взносы и НДФЛ за каждый месяц года.
+  // Режим «одинаково»: численность × зарплата; режим «помесячно»: численность и ФОТ за каждый месяц.
+  // Предельная база и порог НДФЛ 2,4 млн считаются на «среднего» работника (ФОТ / численность).
+  const out = Array(12).fill(null).map(() => ({ n: 0, salary: 0, contrib: 0, ndfl: 0 }));
+  if (s.staff !== 'yes') return out;
+  const ns = Math.max(0, parseNum(s.ns) || 0) / 100;
+  const m15 = C.mrot * 1.5;
+  const monthly = s.payMode === 'month';
+  let base = 0;
+  for (let m = 0; m < 12; m++) {
+    let n, fot;
+    if (monthly) {
+      // численность — из общего поля; в месяц без выплат считаем, что выплат нет
+      fot = Math.max(0, parseNum(s.pay.fot[m]) || 0);
+      n = fot > 0 ? Math.max(1, Math.round(parseNum(s.staffCount) || 0)) : 0;
+    } else {
+      n = Math.max(0, Math.round(parseNum(s.staffCount) || 0));
+      fot = n * Math.max(0, parseNum(s.salary) || 0);
+    }
+    const S = n > 0 ? fot / n : 0;
+    let c;
+    if (s.tariff === 'general') {
+      const within = Math.min(S, Math.max(0, C.baseLimit - base));
+      c = within * 0.30 + (S - within) * 0.151;
+    } else {
+      const a = Math.min(S, m15);
+      c = a * 0.30 + (S - a) * (s.tariff === 'manuf' ? 0.076 : 0.15);
+    }
+    const nd13 = Math.min(S, Math.max(0, 2.4e6 - base));
+    const ndfl = (nd13 * NDFL + (S - nd13) * 0.15) * n;
+    base += S;
+    out[m] = { n, salary: fot, contrib: (c + S * ns) * n, ndfl };
+  }
+  return out;
+}
+
+function compute(s) {
+  const C = CONFIG[s.year];
+  const thr = C.vatThreshold;
+  const M = buildMonths(s);
+  const emp = employeeMonth(s, C);
+  const prev = Math.max(0, parseNum(s.prevIncome) || 0);
+  const isIP = s.form === 'ip';
+  const isD = s.obj === 'd';
+  const rate = (isD ? (parseNum(s.rateD) ?? 6) : (parseNum(s.rateDR) ?? 15)) / 100;
+  const vatOn = s.vatMode !== 'none';
+  const kind = s.vatMode === 'auto' ? (s.autoKind === 'general' ? '22' : '5') : s.vatMode;
+  const override = s.vatStart !== 'auto' && s.vatStart !== undefined ? +s.vatStart : null;
+
+  // 1. Проход по месяцам: порог, ставка, НДС, доход УСН
+  let cumInc = 0, exceedMonth = null, start = null, startReason = null, r5Month = null, usnLostMonth = null;
+  if (prev > thr) { start = 0; startReason = 'prev'; }
+  if (override !== null) { start = override; startReason = 'manual'; }
+  const mo = [];
+  for (let m = 0; m < 12; m++) {
+    const payer = vatOn && start !== null && m >= start;
+    let R = 0;
+    if (payer) {
+      if (kind === '22') R = 22;
+      else if (kind === '7') R = 7;
+      else R = (prev > C.r5Limit || (r5Month !== null && m > r5Month)) ? 7 : 5;
+    }
+    const r = M.rev[m];
+    const vatOut = !payer ? 0 : (s.pricing === 'top' ? r * R / 100 : r * R / (100 + R));
+    const inc = s.pricing === 'top' || !payer ? r : r - vatOut;
+    const ded = payer && R === 22 ? M.iv[m] : 0;
+    const expUsn = M.exp[m] - ded;                 // входящий НДС к вычету не идёт в расходы
+    cumInc += inc;
+    mo.push({ m, payer, R, receipts: s.pricing === 'top' ? r + vatOut : r, vatOut, ded, inc, expUsn, cumInc, fc: M.fc[m] });
+    if (exceedMonth === null && cumInc > thr) {
+      exceedMonth = m;
+      if (start === null && override === null) { start = m + 1; startReason = 'exceed'; }
+    }
+    if (r5Month === null && cumInc > C.r5Limit) r5Month = m;
+    if (usnLostMonth === null && cumInc > C.usnLimit) usnLostMonth = m;
+  }
+  const yearInc = cumInc;
+  const startInYear = start !== null && start <= 11 && vatOn;
+
+  // 2. Взносы ИП
+  const yearExp = mo.reduce((a, x) => a + x.expUsn, 0) + emp.reduce((a, x) => a + x.salary + x.contrib, 0);
+  const ip1Base = isD ? yearInc : yearInc - yearExp;
+  const ip1 = isIP ? Math.min(Math.max(0, ip1Base - 300000) * 0.01, C.ip1Max) : 0;
+  const ipFixed = isIP ? C.ipFixed : 0;
+
+  // 3. УСН по периодам нарастающим итогом
+  const per = [];
+  let advPaid = 0;
+  const hasStaff = s.staff === 'yes';
+  for (let p = 0; p < 4; p++) {
+    const last = p * 3 + 2;
+    const sl = mo.slice(0, last + 1);
+    const incCum = sl.reduce((a, x) => a + x.inc, 0);
+    const recCum = sl.reduce((a, x) => a + x.receipts, 0);
+    const empSal = emp.slice(0, last + 1).reduce((a, x) => a + x.salary, 0);
+    const empCon = emp.slice(0, last + 1).reduce((a, x) => a + x.contrib, 0);
+    const vatOutCum = sl.reduce((a, x) => a + x.vatOut, 0);
+    const vatDedCum = sl.reduce((a, x) => a + x.ded, 0);
+    let expCum = 0, base, taxCalc, red = 0, redAvail = 0, redCap = 0, tax, minTax = 0, minApplied = false;
+    let empRed = 0, expPlain = 0, ipShare = 0;
+    if (isD) {
+      base = incCum;
+      taxCalc = incCum * rate;
+      // взносы за месяц m уменьшают налог периода, в котором срок уплаты (месяц m+1)
+      for (let m = 0; m < 12; m++) if (m + 1 <= last) empRed += emp[m].contrib;
+      redAvail = empRed + ipFixed + (p === 3 ? ip1 : 0);
+      redCap = (isIP && !hasStaff) ? taxCalc : taxCalc * 0.5;
+      red = Math.min(redAvail, redCap);
+      tax = taxCalc - red;
+    } else {
+      expPlain = sl.reduce((a, x) => a + x.expUsn, 0);
+      ipShare = ipFixed * (p + 1) / 4;
+      expCum = expPlain + empSal + empCon + ipShare;
+      base = incCum - expCum;
+      taxCalc = Math.max(0, base) * rate;
+      tax = taxCalc;
+      if (p === 3) {
+        minTax = incCum * RATE_MIN_TAX;
+        if (minTax > tax) { tax = minTax; minApplied = true; }
+      }
+    }
+    let payable = tax - advPaid;
+    if (p < 3) payable = Math.max(0, payable);
+    const prevAdv = advPaid;
+    if (p < 3) advPaid += payable;
+    per.push({ p, last, incCum, recCum, expCum, base, taxCalc, redAvail, redCap, red, tax, minTax, minApplied, prevAdv, payable,
+      empRed, ip1Red: isD && p === 3 ? ip1 : 0, expPlain, ipShare,
+      vatOutCum, vatDedCum, vatPayCum: vatOutCum - vatDedCum, empSal, empCon,
+      empNdfl: emp.slice(0, last + 1).reduce((a, x) => a + x.ndfl, 0),
+      fc: sl.some((x) => x.fc) });
+  }
+
+  // 4. Поквартальные значения
+  const qs = per.map((x, i) => {
+    const pr = i ? per[i - 1] : null;
+    const d = (k) => x[k] - (pr ? pr[k] : 0);
+    const ms = mo.slice(i * 3, i * 3 + 3);
+    return {
+      inc: d('incCum'), rec: d('recCum'), exp: isD ? 0 : d('expCum'), usnPay: x.payable,
+      vatOut: d('vatOutCum'), vatDed: d('vatDedCum'), vatPay: d('vatPayCum'),
+      empCon: d('empCon'), empSal: d('empSal'), empNdfl: d('empNdfl'),
+      ip: ipFixed / 4 + (i === 3 ? ip1 : 0),
+      fc: ms.some((m) => m.fc), rates: [...new Set(ms.filter((m) => m.payer).map((m) => m.R))]
+    };
+  });
+
+  const Y = per[3];
+  const vatYear = Y.vatPayCum;
+  const empYear = Y.empCon;
+  const insYear = empYear + ipFixed + ip1;
+  const total = Y.tax + Math.max(0, vatYear) + insYear;
+
+  // Прогноз: среднемесячный доход по фактическим месяцам
+  const factMonths = M.filled;
+  const factInc = factMonths ? mo[Math.min(factMonths, 12) - 1].cumInc : 0;
+  const exceedIsForecast = exceedMonth !== null && mo[exceedMonth].fc;
+
+  // Средняя численность нарастающим итогом (лимит УСН — 130 человек)
+  let headSum = 0, headAvgMax = 0, headLostMonth = null;
+  emp.forEach((e, m) => {
+    headSum += e.n;
+    const avg = headSum / (m + 1);
+    if (avg > headAvgMax) headAvgMax = avg;
+    if (headLostMonth === null && avg > 130) headLostMonth = m;
+  });
+  const headYearAvg = headSum / 12;
+
+  return { headAvgMax, headLostMonth, headYearAvg, C, s, M, mo, emp, per, qs, prev, thr, isIP, isD, rate, vatOn, kind, start, startReason, startInYear,
+    exceedMonth, exceedIsForecast, r5Month, usnLostMonth, yearInc, yearExp, ip1, ip1Base, ipFixed,
+    vatYear, empYear, insYear, total, factMonths, factInc, override };
+}
+
+/* ============================================================
+   ИНТЕРФЕЙС
+   ============================================================ */
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+
+function syncControls() {
+  $$('.seg[data-key]').forEach((seg) => {
+    const k = seg.dataset.key;
+    $$('button', seg).forEach((b) => b.setAttribute('aria-pressed', String(String(state[k]) === b.dataset.v)));
+  });
+  $$('[data-num]').forEach((el) => { if (document.activeElement !== el) el.value = fmtInput(state[el.dataset.num]); });
+  const vs = $('#vatStart');
+  vs.innerHTML = '';
+  vs.add(new Option('Авто — по порогу', 'auto'));
+  MONTHS.forEach((n, i) => vs.add(new Option('С 1 ' + MONTHS_GEN[i], String(i))));
+  vs.value = String(state.vatStart);
+  $('#tariff').value = state.tariff;
+  $$('[data-show]').forEach((el) => {
+    const ok = el.dataset.show.split(';').every((cond) => {
+      const [k, vals] = cond.split(':');
+      return vals.split(',').includes(String(state[k]));
+    });
+    el.hidden = !ok;
+  });
+}
+
+function needIv() {
+  return state.vatMode === '22' || (state.vatMode === 'auto' && state.autoKind === 'general');
+}
+
+function renderDataTable(R) {
+  const tbl = $('#data-tbl');
+  const showExp = state.obj === 'dr';
+  const showIv = needIv();
+  const isQ = state.input === 'quarter';
+  const rows = isQ ? PERIODS : MONTHS;
+  const src = isQ ? state.q : state.m;
+  const errSet = new Set(R.M.errors.map(([a, i]) => a + i));
+  let h = '<thead><tr><th>' + (isQ ? 'Период' : 'Месяц') + '</th><th>Поступления, ₽' + (isQ ? '<span class="sub">с начала года</span>' : '') + '</th>';
+  if (showExp) h += '<th>Расходы, ₽<span class="sub">без зарплаты и взносов</span></th>';
+  if (showIv) h += '<th>Входящий НДС, ₽<span class="sub">в этих расходах</span></th>';
+  h += '</tr></thead><tbody>';
+  rows.forEach((name, i) => {
+    let sub = '';
+    if (isQ) {
+      const cur = parseNum(src.rev[i]);
+      if (cur !== null) { const pv = i ? (parseNum(src.rev[i - 1]) || 0) : 0; sub = '<span class="sub">за ' + QNAMES[i] + ': ' + mln(cur - pv) + '</span>'; }
+    }
+    const fcRow = isQ ? R.M.fc[i * 3] : R.M.fc[i];
+    const ph = fcRow ? 'прогноз: ' + nf0.format(Math.round(isQ ? R.M.rev.slice(0, i * 3 + 3).reduce((a, x) => a + x, 0) : R.M.rev[i])) : '';
+    h += '<tr><td>' + name + sub + '</td>';
+    h += '<td><input class="field__input' + (errSet.has('rev' + i) ? ' is-error' : '') + '" data-arr="rev" data-i="' + i + '" inputmode="decimal" placeholder="' + ph + '" aria-label="Поступления, ' + name + '" value="' + fmtInput(src.rev[i]) + '"></td>';
+    if (showExp) h += '<td><input class="field__input' + (errSet.has('exp' + i) ? ' is-error' : '') + '" data-arr="exp" data-i="' + i + '" inputmode="decimal" aria-label="Расходы, ' + name + '" value="' + fmtInput(src.exp[i]) + '"></td>';
+    if (showIv) h += '<td><input class="field__input' + (errSet.has('iv' + i) ? ' is-error' : '') + '" data-arr="iv" data-i="' + i + '" inputmode="decimal" aria-label="Входящий НДС, ' + name + '" value="' + fmtInput(src.iv[i]) + '"></td>';
+    h += '</tr>';
+  });
+  tbl.innerHTML = h + '</tbody>';
+}
+
+function renderPayTable(R) {
+  const tbl = $('#pay-tbl');
+  if (!tbl) return;
+  let h = '<thead><tr><th>Месяц</th><th>Зарплата всех за месяц, ₽</th></tr></thead><tbody>';
+  MONTHS.forEach((name, i) => {
+    h += '<tr><td>' + name + '</td>' +
+      '<td><input class="field__input" data-pay="fot" data-i="' + i + '" inputmode="decimal" aria-label="Зарплата, ' + name + '" value="' + fmtInput(state.pay.fot[i]) + '"></td></tr>';
+  });
+  tbl.innerHTML = h + '</tbody><tfoot><tr class="pay-total"><td>Итого за год</td><td id="pay-total"></td></tr></tfoot>';
+  updatePayTotal();
+}
+function updatePayTotal() {
+  const el = $('#pay-total');
+  if (el) el.textContent = rub(state.pay.fot.reduce((a, v) => a + (parseNum(v) || 0), 0));
+}
+
+function updateStaffNotes(R) {
+  const el = $('#staff-notes');
+  if (state.staff !== 'yes') { el.innerHTML = ''; return; }
+  el.innerHTML = R.headLostMonth !== null
+    ? '<p class="note note--danger"><b>Больше 130 сотрудников</b> — при таком штате УСН применять нельзя: право теряется с 1-го числа месяца превышения.</p>'
+    : '';
+}
+
+function updateInputNotes(R) {
+  const hint = $('#input-hint');
+  hint.textContent = state.input === 'quarter'
+    ? 'Вводите суммы с начала года: за 3, 6, 9 и 12 месяцев — как в КУДиР. Незаполненные периоды калькулятор досчитает прогнозом.'
+    : 'Вводите поступления каждого месяца. Незаполненные месяцы в конце года калькулятор досчитает прогнозом по среднему.';
+  if (state.pricing === 'top' && R.vatOn) hint.textContent += ' Цены «сверху»: в месяцы с НДС вводите выручку без НДС.';
+  const notes = [];
+  if (R.M.errors.length) notes.push('<p class="note note--danger"><b>Проверьте данные:</b> нарастающий итог не может быть меньше, чем в предыдущем периоде. Ошибочные поля подсвечены.</p>');
+  if (state.input === 'quarter' && R.exceedMonth !== null && R.startReason === 'exceed') {
+    const qi = Math.floor(R.exceedMonth / 3);
+    notes.push('<p class="note"><b>Месяц превышения определён приблизительно</b> (' + MONTHS[R.exceedMonth].toLowerCase() + ', ' + QNAMES[qi] + '): внутри квартала доход распределён поровну. Для точной даты переключитесь на ввод «Помесячно» или выберите месяц вручную в шаге 2.</p>');
+  }
+  if (needIv() && state.obj === 'd') notes.push('<p class="note">При ставке 22% входящий НДС уменьшает НДС к уплате. Расходы на «Доходах» на налог УСН не влияют.</p>');
+  $('#input-notes').innerHTML = notes.join('');
+}
+
+/* ---------- Анимация чисел ---------- */
+const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function tween(el, to, fmt) {
+  const from = el._v || 0;
+  el._v = to;
+  if (still || Math.abs(to - from) < 1) { el.textContent = fmt(to); return; }
+  const t0 = performance.now(), D = 450;
+  cancelAnimationFrame(el._raf);
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / D);
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = fmt(from + (to - from) * e);
+    if (k < 1) el._raf = requestAnimationFrame(step);
+  };
+  el._raf = requestAnimationFrame(step);
+}
+
+/* ---------- Статус НДС ---------- */
+const ICONS = {
+  ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  payer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/><path d="M19 5L5 19"/></svg>',
+  danger: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4.5M12 17.5v.01"/></svg>'
+};
+function renderStatus(R) {
+  const el = $('#status');
+  const Y = state.year, thr = R.thr, C = R.C;
+  let cls = 'status', icon = ICONS.ok, title, text = '';
+  const nextThr = C.vatThresholdNext;
+  const months = R.exceedMonth;
+  const fcTag = (b) => b ? ' (по прогнозу)' : '';
+
+  if (R.headLostMonth !== null) {
+    cls += ' status--danger'; icon = ICONS.danger;
+    title = 'Больше 130 сотрудников — УСН недоступна';
+    text = 'Средняя численность с начала года превысила 130 человек в ' + MONTHS_PREP[R.headLostMonth] + ' (' + nf2.format(Math.round(R.headAvgMax * 10) / 10) + ' чел.). Право на УСН теряется с 1 ' + MONTHS_GEN[R.headLostMonth] + ' — дальше общая система налогообложения, и этот расчёт уже не подходит.';
+  } else if (R.usnLostMonth !== null) {
+    cls += ' status--danger'; icon = ICONS.danger;
+    title = 'Доход больше лимита УСН — ' + mln(C.usnLimit);
+    text = 'Право на УСН теряется с 1 ' + MONTHS_GEN[R.usnLostMonth] + ' ' + Y + fcTag(R.mo[R.usnLostMonth].fc) + '. Дальше — общая система налогообложения, и этот расчёт уже не подходит.';
+  } else if (!R.vatOn) {
+    if (R.exceedMonth !== null || R.prev > thr) {
+      cls += ' status--danger'; icon = ICONS.danger;
+      title = 'Вы выбрали «Без НДС», но порог превышен';
+      text = R.prev > thr ? 'Доход за ' + (Y - 1) + ' год больше ' + mln(thr) + ' — НДС нужно платить с 1 января ' + Y + '.' :
+        'Доход превысил ' + mln(thr) + ' в ' + MONTHS_PREP[months] + fcTag(R.exceedIsForecast) + ' — НДС с 1 ' + (months < 11 ? MONTHS_GEN[months + 1] + ' ' + Y : 'января ' + (Y + 1)) + '. Выберите режим «Авто», чтобы увидеть сумму НДС.';
+    } else {
+      title = 'Вы освобождены от НДС';
+      text = 'До порога ' + mln(thr) + ' осталось ' + mln(thr - R.yearInc) + ' по итогам года' + fcTag(R.mo[11].fc) + '.';
+    }
+  } else if (R.startInYear) {
+    cls += ' status--payer'; icon = ICONS.payer;
+    const st = R.start;
+    title = 'Вы плательщик НДС с 1 ' + MONTHS_GEN[st] + ' ' + Y;
+    if (R.startReason === 'prev') text = 'Доход за ' + (Y - 1) + ' год (' + mln(R.prev) + ') больше порога ' + mln(thr) + ', поэтому освобождения нет весь ' + Y + ' год.';
+    else if (R.startReason === 'manual') text = 'Месяц начала выбран вручную.' + (R.exceedMonth !== null ? ' По расчёту порог превышен в ' + MONTHS_PREP[R.exceedMonth] + fcTag(R.exceedIsForecast) + '.' : ' По вашим данным порог ' + mln(thr) + ' не превышен — проверьте, нужен ли НДС.');
+    else text = 'Доход с начала года превысил ' + mln(thr) + ' в ' + MONTHS_PREP[months] + fcTag(R.exceedIsForecast) + ' — с 1-го числа следующего месяца начисляется НДС' + (R.exceedIsForecast ? '. Через ' + monthsWord(st - R.factMonths) + ' от последнего заполненного месяца.' : '.');
+    const rates = [...new Set(R.mo.filter((x) => x.payer).map((x) => x.R))];
+    text += ' Ставка: ' + rates.map((r) => r + '%').join(' → ') + '.';
+  } else if (R.start !== null && R.start > 11) {
+    cls += ' status--payer'; icon = ICONS.payer;
+    title = 'НДС — с 1 января ' + (Y + 1);
+    text = 'Порог превышен в декабре' + fcTag(R.exceedIsForecast) + ', поэтому в ' + Y + ' году НДС не платите, а весь ' + (Y + 1) + ' год будете плательщиком.';
+  } else {
+    title = 'Пока вы освобождены от НДС';
+    text = 'До порога ' + mln(thr) + ' по итогам года' + fcTag(R.mo[11].fc) + ' остаётся ' + mln(Math.max(0, thr - R.yearInc)) + '.';
+    if (state.vatMode !== 'auto') text += ' Вы выбрали ставку ' + state.vatMode + '%, но по данным порог не превышен — выберите месяц начала вручную, если уже платите НДС.';
+  }
+
+  // мини-показатели
+  const remain = thr - R.factInc;
+  const avg = R.factMonths ? R.factInc / R.factMonths : 0;
+  let m2 = '—';
+  if (R.prev > thr) m2 = 'с 1 января';
+  else if (remain <= 0) m2 = 'порог уже пройден';
+  else if (avg > 0) { const n = Math.floor(remain / avg) + 1; m2 = R.factMonths + n > 12 ? 'не в этом году' : 'через ' + monthsWord(n); }
+  let next;
+  if (R.yearInc > nextThr) next = 'плательщик с 1 января';
+  else next = 'освобождение (доход ≤ ' + mln(nextThr) + ')';
+
+  const scale = Math.max(thr * 1.4, R.yearInc * 1.08, 1);
+  const factPct = Math.min(100, R.factInc / scale * 100);
+  const yearPct = Math.min(100, R.yearInc / scale * 100);
+  // сохраняем служебные классы анимации появления, иначе карточка снова станет прозрачной
+  el.className = cls + (el.classList.contains('is-visible') ? ' is-visible' : '');
+  el.innerHTML =
+    '<div class="status__light">' + icon + '</div>' +
+    '<div><p class="status__title">' + title + '</p><p class="status__text">' + text + '</p>' +
+    '<div class="bar" role="img" aria-label="Доход ' + mln(R.factInc) + ' из порога ' + mln(thr) + '">' +
+      '<span class="bar__fill' + (R.yearInc > thr ? ' is-over' : '') + '" style="width:' + yearPct + '%;opacity:.35;position:absolute;left:0;top:0"></span>' +
+      '<span class="bar__fill' + (R.factInc > thr ? ' is-over' : '') + '" id="bar-fill" style="width:0;position:relative"></span>' +
+      '<span class="bar__mark" style="left:' + (thr / scale * 100) + '%"><span>порог ' + mln(thr) + '</span></span>' +
+      '<span class="bar__now" style="left:' + factPct + '%;transform:translateX(' + (factPct > 70 ? '-100%' : factPct < 30 ? '0' : '-50%') + ')">факт: ' + mln(R.factInc) + '</span>' +
+    '</div>' +
+    '<div class="status__grid">' +
+      '<div class="mini"><div class="mini__l">' + (remain > 0 ? 'Осталось до порога (факт)' : 'Превышение порога (факт)') + '</div><div class="mini__v">' + mln(Math.abs(remain)) + '</div></div>' +
+      '<div class="mini"><div class="mini__l">Превысите порог при текущем темпе</div><div class="mini__v">' + m2 + '</div></div>' +
+      '<div class="mini"><div class="mini__l">В ' + (Y + 1) + ' году</div><div class="mini__v" style="font-size:16px">' + next + '</div></div>' +
+    '</div>' +
+    extraWarnings(R) + '</div>';
+  requestAnimationFrame(() => { const f = $('#bar-fill'); if (f) f.style.width = factPct + '%'; });
+}
+function monthsWord(n) {
+  n = Math.max(0, n);
+  const m10 = n % 10, m100 = n % 100;
+  const w = (m10 === 1 && m100 !== 11) ? 'месяц' : (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) ? 'месяца' : 'месяцев';
+  return n + ' ' + w;
+}
+function extraWarnings(R) {
+  const w = [];
+  const C = R.C;
+  if (R.vatOn && (R.kind === '5') && R.r5Month !== null && R.r5Month < 11) w.push('<p class="note note--warn">Доход превысил ' + mln(C.r5Limit) + ' в ' + MONTHS_PREP[R.r5Month] + ' — с 1 ' + MONTHS_GEN[R.r5Month + 1] + ' ставка НДС 7%.</p>');
+  if (R.vatOn && R.startInYear && R.kind !== '22') w.push('<p class="note">Выбрав 5% или 7%, по общему правилу применяют их 12 кварталов подряд. Сравните с 22% в разделе «<a href="#compare">5% или 22%</a>».</p>');
+  if (!C.limitsConfirmed || !C.mrotConfirmed || !C.baseConfirmed) w.push('<p class="note">Для ' + state.year + ' года часть значений предварительные: лимит УСН и граница 5% по проекту дефлятора, МРОТ по законопроекту, предельная база — значение 2026 года.</p>');
+  return w.join('');
+}
+
+/* ---------- KPI ---------- */
+function renderKpis(R) {
+  const Y = R.per[3];
+  tween($('#k-total'), R.total, rub);
+  tween($('#k-usn'), Y.tax, rub);
+  tween($('#k-vat'), Math.max(0, R.vatYear), rub);
+  tween($('#k-ins'), R.insYear, rub);
+  const load = R.yearInc > 0 ? R.total / R.yearInc * 100 : 0;
+  $('#k-total-s').textContent = 'Нагрузка ' + pct(Math.round(load * 10) / 10) + ' от дохода' + (R.per[3].fc ? ' · с прогнозом' : '');
+  $('#k-usn-s').textContent = R.isD ? 'После уменьшения на взносы: −' + rub(Y.red) : (Y.minApplied ? 'Минимальный налог 1%' : 'База: ' + rub(Math.max(0, Y.base)));
+  $('#k-vat-s').textContent = R.vatOn && (R.startInYear) ? 'Начислено ' + rub(Y.vatOutCum) + (Y.vatDedCum ? ', вычет ' + rub(Y.vatDedCum) : '') : 'Не начисляется';
+  $('#k-ins-s').textContent = [R.isIP ? 'ИП за себя ' + rub(R.ipFixed + R.ip1) : '', R.empYear ? 'за сотрудников ' + rub(R.empYear) : ''].filter(Boolean).join(' · ') || 'Нет';
+}
+
+/* ---------- Расшифровки сумм (всплывающие подсказки) ---------- */
+const TIPS = [];
+const PNAME = ['I квартал', 'полугодие', '9 месяцев', 'год'];
+const tipHead = (t) => '<div class="tip__h">' + t + '</div>';
+const tipSub = (t) => '<div class="tip__s">' + t + '</div>';
+const tipRow = (a, b, total) => '<div class="tip__r' + (total ? ' tip__r--t' : '') + '"><span>' + a + '</span><b>' + b + '</b></div>';
+const tipNote = (t) => '<div class="tip__n">' + t + '</div>';
+const mname = (m) => MONTHS[m].toLowerCase();
+const mrange = (a, b) => a === b ? mname(a) : mname(a) + '–' + mname(b);
+
+function tipIncome(R, x) {
+  if (x.vatOutCum <= 0) return null;
+  if (state.pricing === 'top') return tipHead('Доход УСН за ' + PNAME[x.p]) + tipRow('Выручка без НДС', rub(x.incCum), true) + tipNote('Цены «сверху»: НДС ' + rub(x.vatOutCum) + ' покупатели заплатили дополнительно, в доход УСН он не входит.');
+  return tipHead('Доход УСН за ' + PNAME[x.p]) + tipRow('Поступления на счёт', rub(x.recCum)) + tipRow('− НДС в поступлениях', rub(x.vatOutCum)) + tipRow('= Доход УСН', rub(x.incCum), true) + tipNote('НДС, полученный от покупателей, в доходы УСН не включается (ст. 346.15 НК РФ).');
+}
+
+function tipExp(R, x) {
+  let h = tipHead('Расходы за ' + PNAME[x.p]) + tipRow('Расходы из таблицы' + (R.kind === '22' && R.vatOn ? ' (без НДС к вычету)' : ''), rub(x.expPlain));
+  if (state.staff === 'yes') h += tipRow('+ Зарплата', rub(x.empSal)) + tipRow('+ Взносы за сотрудников', rub(x.empCon));
+  if (R.isIP) h += tipRow('+ Фиксированные взносы ИП (' + (x.p + 1) + '/4 года)', rub(x.ipShare));
+  h += tipRow('= Расходы', rub(x.expCum), true);
+  if (R.isIP) h += tipNote('Фиксированные взносы ИП учтены равными частями по кварталам — как будто вы платите их ежеквартально.');
+  return h;
+}
+
+function tipRed(R, x) {
+  const lim100 = R.isIP && state.staff !== 'yes';
+  let h = tipHead('Уменьшение налога за ' + PNAME[x.p]) + tipSub('Какие взносы можно учесть');
+  if (state.staff === 'yes') h += tipRow('Взносы за сотрудников за ' + mrange(0, x.last - 1) + '*', rub(x.empRed));
+  if (R.isIP) h += tipRow('Фиксированные взносы ИП за ' + state.year + ' год', rub(R.ipFixed));
+  if (R.isIP && x.p === 3) h += tipRow('Взнос 1% с дохода свыше 300 000 ₽', rub(x.ip1Red));
+  h += tipRow('Итого взносов', rub(x.redAvail), true);
+  h += tipSub('Лимит уменьшения');
+  h += tipRow((lim100 ? '100%' : '50%') + ' от налога по ставке ' + rub(x.taxCalc), rub(x.redCap));
+  h += tipRow('Уменьшаем на меньшую из двух сумм', rub(x.red), true);
+  const n = [];
+  if (state.staff === 'yes') n.push('* Взносы за ' + mname(x.last) + ' платятся до 28 ' + MONTHS_GEN[(x.last + 1) % 12] + ', поэтому уменьшат ' + (x.p < 3 ? 'налог за ' + PNAME[x.p + 1] : 'налог следующего года') + '.');
+  if (R.isIP && x.p < 3) n.push('Взнос 1% считается по итогам года, поэтому учитывается только в годовом налоге.');
+  if (lim100) n.push('ИП без сотрудников может уменьшить налог на свои взносы полностью.');
+  else n.push((R.isIP ? 'ИП с сотрудниками' : 'Организация') + ' может уменьшить налог не больше чем наполовину.');
+  if (x.redAvail > x.redCap) n.push('Сработал лимит: взносов больше, чем можно учесть.');
+  return h + tipNote(n.join('<br>'));
+}
+
+function tipTax(R, x) {
+  if (R.isD) return tipHead('Налог за ' + PNAME[x.p] + ' нарастающим итогом') + tipRow('Налог по ставке', rub(x.taxCalc)) + tipRow('− Уменьшение на взносы', rub(x.red)) + tipRow('= Налог за период', rub(x.tax), true);
+  if (x.p < 3) return tipHead('Налог за ' + PNAME[x.p] + ' нарастающим итогом') + tipRow('База × ставка', rub(x.taxCalc), true) + tipNote('Минимальный налог проверяется только по итогам года.');
+  return tipHead('Налог за год') + tipRow('Обычный: база × ставка', rub(x.taxCalc)) + tipRow('Минимальный: 1% доходов', rub(x.minTax)) + tipRow('Платится больший', rub(x.tax), true);
+}
+
+function tipPrev(R, x) {
+  if (x.p === 0) return tipHead('Авансы ранее') + tipNote('В I квартале авансов ещё не было — это первый период года.');
+  let h = tipHead('Авансы, начисленные до этого периода');
+  for (let i = 0; i < x.p; i++) h += tipRow('За ' + PNAME[i], rub(R.per[i].payable));
+  return h + tipRow('Итого', rub(x.prevAdv), true);
+}
+
+function tipPay(x) {
+  const due = ['до 28 апреля', 'до 28 июля', 'до 28 октября', state.form === 'ip' ? 'до 28 апреля следующего года' : 'до 28 марта следующего года'][x.p];
+  let h = tipHead('К уплате за ' + PNAME[x.p] + ' — ' + due) + tipRow('Налог нарастающим итогом', rub(x.tax)) + tipRow('− Авансы, начисленные ранее', rub(x.prevAdv)) + tipRow('= К уплате', rub(x.payable), true);
+  if (x.p < 3 && x.tax - x.prevAdv < 0) h += tipNote('Разница отрицательная — в этом периоде платить ничего не нужно.');
+  if (x.p === 3 && x.payable < 0) h += tipNote('Отрицательная сумма — переплата: она останется на ЕНС.');
+  return h;
+}
+
+function tipVat(R, v, i, cum) {
+  if (v[0] <= 0 && v[1] <= 0) return null;
+  const from = cum ? 0 : i * 3, to = i * 3 + 2;
+  const ms = R.mo.slice(from, to + 1).filter((m) => m.payer);
+  let h = tipHead('НДС за ' + (cum ? PNAME[i] + ' (нарастающим итогом)' : QNAMES[i]));
+  const byRate = {};
+  ms.forEach((m) => { (byRate[m.R] = byRate[m.R] || []).push(m); });
+  Object.keys(byRate).forEach((r) => {
+    const arr = byRate[r];
+    const label = mrange(arr[0].m, arr[arr.length - 1].m);
+    if (state.pricing === 'top') {
+      h += tipRow('Выручка без НДС за ' + label, rub(arr.reduce((a, m) => a + m.inc, 0))) + tipRow('× ' + r + '%', rub(arr.reduce((a, m) => a + m.vatOut, 0)));
+    } else {
+      h += tipRow('Поступления с НДС за ' + label, rub(arr.reduce((a, m) => a + m.receipts, 0))) + tipRow('× ' + r + '/' + (100 + +r), rub(arr.reduce((a, m) => a + m.vatOut, 0)));
+    }
+  });
+  h += tipRow('= НДС начислен', rub(v[0]), true);
+  if (R.kind === '22') h += tipRow('− Вычет входящего НДС', rub(v[1])) + tipRow('= НДС к уплате', rub(v[2]), true);
+  else h += tipNote('При ставках 5% и 7% входящий НДС к вычету не принимается, поэтому к уплате — вся начисленная сумма.');
+  if (state.pricing !== 'top') h += tipNote('Ставка ' + Object.keys(byRate).map((r) => r + '/' + (100 + +r)).join(', ') + ' — расчётная: так НДС выделяют из суммы, в которую он уже включён.');
+  return h;
+}
+
+function tipThirds(R, q, i) {
+  const pay = Math.max(0, q.vatPay);
+  if (pay <= 0) return null;
+  const part = Math.round(pay / 3);
+  let h = tipHead('НДС за ' + QNAMES[i] + ' — тремя частями') + tipRow('НДС к уплате за квартал', rub(pay)) + tipSub('Платежи');
+  for (let j = 0; j < 3; j++) {
+    const d = due(state.year, i * 3 + 3 + j, 28);
+    h += tipRow('до ' + String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear(), rub(j < 2 ? part : pay - part * 2));
+  }
+  return h + tipNote('Декларацию за квартал сдают до 25-го числа следующего месяца.');
+}
+
+/* ---------- Всплывающее окно ---------- */
+/* Наведение — показывает; нажатие — закрепляет (закрыть: ×, Esc или клик мимо).
+   Длинная расшифровка прокручивается внутри окна, внизу кнопка «Прокрутить вниз». */
+const STATIC_TIPS = {
+  staff:
+    tipHead('Зачем указывать сотрудников') +
+    tipSub('На что это влияет') +
+    '<ul class="tip__ul">' +
+    '<li><b>Уменьшение налога «Доходы».</b> ИП без сотрудников уменьшает налог на свои взносы до 100%, ИП с сотрудниками и ООО — не больше чем на 50%.</li>' +
+    '<li><b>Новые платежи.</b> За каждого работника — страховые взносы (30% в пределах 2 979 000 ₽ в год, 15,1% сверх) и НДФЛ 13–15%, который вы удерживаете из зарплаты. Платятся ежемесячно до 28-го числа.</li>' +
+    '<li><b>«Доходы минус расходы».</b> Зарплата и взносы — расходы, они уменьшают налоговую базу.</li>' +
+    '<li><b>Лимит УСН — 130 человек.</b> Средняя численность работников за период не должна превышать 130. При превышении право на УСН теряется с 1-го числа месяца, в котором оно допущено, — переход на общую систему.</li>' +
+    '<li><b>Льготный тариф взносов</b> доступен только субъектам МСП из реестра (малое предприятие — до 100 человек, среднее — до 250) в приоритетных отраслях.</li>' +
+    '<li><b>Отчётность.</b> С первым работником добавляются РСВ, 6-НДФЛ, ЕФС-1 и персонифицированные сведения.</li>' +
+    '</ul>' +
+    tipNote('Зарплату можно ввести помесячно — тогда калькулятор учтёт премии, отпуска и изменение численности.')
+};
+const tipEl = document.createElement('div');
+tipEl.className = 'tip';
+tipEl.setAttribute('role', 'dialog');
+tipEl.setAttribute('aria-label', 'Расшифровка');
+tipEl.innerHTML = '<button type="button" class="tip__x" aria-label="Закрыть">×</button><div class="tip__body"></div><button type="button" class="tip__more">Прокрутить вниз ↓</button>';
+document.body.appendChild(tipEl);
+const tipBody = tipEl.querySelector('.tip__body');
+const tipMore = tipEl.querySelector('.tip__more');
+let tipFor = null, tipAt = 0, tipPinned = false, tipHideT = null;
+
+function updateMore() {
+  const over = tipBody.scrollHeight > tipBody.clientHeight + 2;
+  tipEl.classList.toggle('has-more', over);
+  const atEnd = tipBody.scrollTop + tipBody.clientHeight >= tipBody.scrollHeight - 4;
+  tipMore.textContent = atEnd ? 'Наверх ↑' : 'Прокрутить вниз ↓';
+}
+function placeTip(cell) {
+  const r = cell.getBoundingClientRect();
+  const top0 = (document.querySelector('.site-header')?.offsetHeight || 72) + 8;
+  const spaceAbove = r.top - top0 - 10;
+  const spaceBelow = window.innerHeight - r.bottom - 18;
+  tipEl.style.maxHeight = 'none';
+  tipEl.style.left = '0px'; tipEl.style.top = '0px';
+  const natural = tipEl.offsetHeight;
+  const full = window.innerHeight - top0 - 12;
+  // не помещается ни сверху, ни снизу — окно на всю высоту экрана (с прокруткой внутри)
+  const overlay = natural > Math.max(spaceAbove, spaceBelow) && Math.max(spaceAbove, spaceBelow) < full * 0.6;
+  let above = natural <= spaceAbove || (natural > spaceBelow && spaceAbove > spaceBelow);
+  const avail = overlay ? full : Math.max(160, above ? spaceAbove : spaceBelow);
+  tipEl.style.maxHeight = avail + 'px';
+  const tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+  let x = r.left + r.width / 2 - tw / 2;
+  x = Math.max(8, Math.min(window.innerWidth - tw - 8, x));
+  const y = overlay ? top0 + Math.max(0, (full - th) / 2) : above ? Math.max(top0, r.top - th - 4) : r.bottom + 4;
+  tipEl.style.left = x + 'px';
+  tipEl.style.top = y + 'px';
+  updateMore();
+}
+function showTip(cell, pin) {
+  const h = cell.dataset.tipKey ? STATIC_TIPS[cell.dataset.tipKey] : TIPS[+cell.dataset.tipI];
+  if (!h) return;
+  clearTimeout(tipHideT);
+  if (tipFor !== cell) { tipBody.innerHTML = h; tipBody.scrollTop = 0; }
+  tipEl.classList.add('is-on');
+  tipEl.classList.toggle('is-pinned', !!pin);
+  tipPinned = !!pin;
+  tipFor = cell; tipAt = Date.now();
+  placeTip(cell);
+}
+function hideTip() { clearTimeout(tipHideT); clearTimeout(tipSwitchT); tipEl.classList.remove('is-on', 'is-pinned'); tipFor = null; tipPinned = false; }
+function hideSoon() { clearTimeout(tipHideT); tipHideT = setTimeout(() => { if (!tipPinned) hideTip(); }, 700); }
+
+/* Пока открыта подсказка, соседние суммы не перехватывают её сразу:
+   мышь можно спокойно вести через таблицу к окну подсказки и прокручивать его. */
+let tipSwitchT = null;
+document.addEventListener('mouseover', (e) => {
+  const c = e.target.closest('.has-tip');
+  if (c) {
+    clearTimeout(tipHideT);
+    if (tipPinned || c === tipFor) { clearTimeout(tipSwitchT); return; }
+    if (!tipFor) { showTip(c); return; }
+    clearTimeout(tipSwitchT);
+    tipSwitchT = setTimeout(() => { if (!tipPinned) showTip(c); }, 450);
+    return;
+  }
+  if (e.target.closest('.tip')) { clearTimeout(tipHideT); clearTimeout(tipSwitchT); return; }
+  clearTimeout(tipSwitchT);
+  if (tipFor && !tipPinned) hideSoon();
+});
+document.addEventListener('focusin', (e) => { const c = e.target.closest('.has-tip'); if (c && !tipPinned) showTip(c); });
+document.addEventListener('focusout', (e) => {
+  if (!e.target.closest('.has-tip') || tipPinned) return;
+  if (e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('.tip')) return;
+  hideTip();
+});
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.tip__x')) { hideTip(); return; }
+  if (e.target.closest('.tip__more')) {
+    const atEnd = tipBody.scrollTop + tipBody.clientHeight >= tipBody.scrollHeight - 4;
+    tipBody.scrollBy({ top: atEnd ? -tipBody.scrollHeight : tipBody.clientHeight * 0.7, behavior: 'smooth' });
+    return;
+  }
+  const c = e.target.closest('.has-tip');
+  if (c) {
+    e.preventDefault();
+    if (tipPinned && tipFor === c) hideTip();
+    else showTip(c, true);
+    return;
+  }
+  if (!e.target.closest('.tip')) hideTip();
+});
+tipBody.addEventListener('scroll', updateMore, { passive: true });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideTip(); });
+document.addEventListener('scroll', (e) => {
+  if (!tipFor) return;
+  if (e.target instanceof Node && tipEl.contains(e.target)) return;   // прокрутка внутри подсказки
+  if (!tipPinned) { hideTip(); return; }
+  const r = tipFor.getBoundingClientRect();
+  if (r.bottom < 0 || r.top > window.innerHeight) hideTip(); else placeTip(tipFor);
+}, true);
+window.addEventListener('resize', () => { if (tipFor) placeTip(tipFor); });
+
+/* ---------- Таблица результатов ---------- */
+/* Модель таблицы — общая для экрана и выгрузки в Excel */
+function buildTableModel(R, cum) {
+  const cols = cum ? PERIODS_SHORT : QNAMES;
+  const fcCols = cum ? R.per.map((x) => x.fc) : R.qs.map((x) => x.fc);
+  const rows = [];
+  const row = (label, vals, cls, tips) => rows.push({ type: 'row', label, vals, cls: cls || '', tips: tips || null });
+  const grp = (label) => rows.push({ type: 'grp', label });
+  const P = R.per, Q = R.qs;
+
+  grp('Налог УСН · ' + (R.isD ? 'Доходы ' : 'Доходы минус расходы ') + pct(R.rate * 100));
+  if (cum) {
+    if (R.vatOn && R.startInYear) row('Поступления на счёт', P.map((x) => x.recCum));
+    row('Доходы УСН (без НДС)', P.map((x) => x.incCum), '', P.map((x) => tipIncome(R, x)));
+    if (!R.isD) {
+      row('Расходы (с зарплатой и взносами)', P.map((x) => x.expCum), '', P.map((x) => tipExp(R, x)));
+      row('Налоговая база', P.map((x) => x.base), '', P.map((x) => tipHead('Налоговая база за ' + PNAME[x.p]) + tipRow('Доходы', rub(x.incCum)) + tipRow('− Расходы', rub(x.expCum)) + tipRow('= База', rub(x.base), true)));
+    }
+    row('Налог по ставке', P.map((x) => x.taxCalc), '', P.map((x) => tipHead('Налог по ставке за ' + PNAME[x.p]) + tipRow(R.isD ? 'Доход УСН' : 'Налоговая база', rub(Math.max(0, x.base))) + tipRow('× ставка', pct(R.rate * 100)) + tipRow('= Налог', rub(x.taxCalc), true) + (!R.isD && x.base < 0 ? tipNote('База отрицательная (убыток), поэтому налог по ставке — 0.') : '')));
+    if (R.isD) row('Уменьшение на взносы' + ((R.isIP && state.staff !== 'yes') ? ' (до 100%)' : ' (до 50%)'), P.map((x) => -x.red), '', P.map((x) => tipRed(R, x)));
+    if (!R.isD) row('Минимальный налог 1% (за год)', [null, null, null, P[3].minTax], '', [null, null, null, tipHead('Минимальный налог за год') + tipRow('Доходы за год', rub(P[3].incCum)) + tipRow('× 1%', '') + tipRow('= Минимальный налог', rub(P[3].minTax), true) + tipRow('Обычный налог (база × ставка)', rub(P[3].taxCalc)) + tipNote(P[3].minApplied ? 'Минимальный налог больше обычного — платится он.' : 'Обычный налог больше минимального — платится обычный.')]);
+    row('Налог за период', P.map((x) => x.tax), 'total', P.map((x) => tipTax(R, x)));
+    row('Начислено авансов ранее', P.map((x) => -x.prevAdv), '', P.map((x) => tipPrev(R, x)));
+    row('К уплате за период', P.map((x) => x.payable), 'pay', P.map((x) => tipPay(x)));
+  } else {
+    if (R.vatOn && R.startInYear) row('Поступления на счёт', Q.map((x) => x.rec));
+    row('Доходы УСН (без НДС)', Q.map((x) => x.inc));
+    if (!R.isD) row('Расходы (с зарплатой и взносами)', Q.map((x) => x.exp));
+    row('К уплате по УСН', Q.map((x) => x.usnPay), 'pay', P.map((x) => tipPay(x)));
+  }
+
+  if (R.vatOn && R.startInYear) {
+    grp('НДС');
+    const V = cum ? P.map((x) => [x.vatOutCum, x.vatDedCum, x.vatPayCum]) : Q.map((x) => [x.vatOut, x.vatDed, x.vatPay]);
+    const vatTips = V.map((v, i) => tipVat(R, v, i, cum));
+    row('НДС начислен', V.map((v) => v[0]), '', vatTips);
+    if (R.kind === '22') row('Вычет входящего НДС', V.map((v) => -v[1]));
+    row('НДС к уплате', V.map((v) => v[2]), 'pay', vatTips);
+    if (!cum) row('Каждый из трёх платежей (1/3)', Q.map((x) => Math.max(0, x.vatPay) / 3), '', Q.map((x, i) => tipThirds(R, x, i)));
+  }
+
+  if (state.staff === 'yes' || R.isIP) grp('Страховые взносы');
+  if (state.staff === 'yes') {
+    row('Фонд оплаты труда', cum ? P.map((x) => x.empSal) : Q.map((x) => x.empSal));
+    row('Взносы за сотрудников', cum ? P.map((x) => x.empCon) : Q.map((x) => x.empCon), 'total');
+    row('НДФЛ 13% (удерживается из зарплаты)', cum ? P.map((x) => x.empNdfl) : Q.map((x) => x.empNdfl));
+  }
+  if (R.isIP) {
+    if (cum) {
+      row('Фиксированные взносы ИП', [null, null, null, R.ipFixed]);
+      row('Взнос 1% с дохода свыше 300 000 ₽', [null, null, null, R.ip1]);
+    } else {
+      row('Фиксированные взносы ИП (до 28.12)', [0, 0, 0, R.ipFixed]);
+      row('Взнос 1% (до 01.07 следующего года)', [0, 0, 0, R.ip1]);
+    }
+  }
+  return { cols, fcCols, rows };
+}
+
+function resultNotes(R) {
+  const n = [];
+  const Y = R.per[3];
+  if (Y.payable < 0) n.push(['', 'По итогам года авансов начислено больше, чем налог за год: переплата ' + rub(-Y.payable) + ' останется на ЕНС — её можно зачесть или вернуть.']);
+  if (!R.isD && Y.minApplied) n.push(['warn', 'Обычный налог за год меньше 1% доходов, поэтому платится минимальный налог ' + rub(Y.minTax) + '. Разницу можно учесть в расходах следующих лет.']);
+  if (R.vatYear < 0) n.push(['', 'Вычеты больше начисленного НДС: сумма ' + rub(-R.vatYear) + ' заявляется к возмещению.']);
+  if (R.headAvgMax > 130) n.push(['danger', 'Средняя численность работников превышает 130 человек — право на УСН теряется. Расчёт по УСН в этом случае не применим.']);
+  return n;
+}
+
+function renderTable(R) {
+  const t = $('#res-tbl');
+  const cum = state.view === 'cum';
+  const M = buildTableModel(R, cum);
+  hideTip();
+  TIPS.length = 0;
+  const head = '<thead><tr><th>Показатель</th>' + M.cols.map((c, i) => '<th>' + c + (M.fcCols[i] ? '<span class="tag">прогноз</span>' : '') + '</th>').join('') + '</tr></thead>';
+  const body = M.rows.map((r) => {
+    if (r.type === 'grp') return '<tr class="grp"><td colspan="5">' + r.label + '</td></tr>';
+    return '<tr' + (r.cls ? ' class="' + r.cls + '"' : '') + '><td>' + r.label + '</td>' + r.vals.map((v, i) => {
+      const tip = r.tips && v !== null ? r.tips[i] : null;
+      const c = [M.fcCols[i] ? 'is-forecast' : '', tip ? 'has-tip' : ''].filter(Boolean).join(' ');
+      let attrs = c ? ' class="' + c + '"' : '';
+      if (tip) { TIPS.push(tip); attrs += ' tabindex="0" data-tip-i="' + (TIPS.length - 1) + '"'; }
+      return '<td' + attrs + '>' + (v === null ? '—' : (tip ? '<span>' + rub(v) + '</span>' : rub(v))) + '</td>';
+    }).join('') + '</tr>';
+  }).join('');
+  t.innerHTML = head + '<tbody>' + body + '</tbody>';
+  $('#res-notes').innerHTML = resultNotes(R).map(([k, txt]) => '<p class="note' + (k ? ' note--' + k : '') + '">' + txt + '</p>').join('');
+}
+
+/* ---------- Графики (SVG) ---------- */
+function niceMax(v) {
+  if (v <= 0) return 1;
+  const p = Math.pow(10, Math.floor(Math.log10(v)));
+  const k = v / p;
+  return (k <= 1 ? 1 : k <= 2 ? 2 : k <= 2.5 ? 2.5 : k <= 3 ? 3 : k <= 4 ? 4 : k <= 5 ? 5 : k <= 6 ? 6 : k <= 8 ? 8 : 10) * p;
+}
+function axisFmt(v) { return v >= 1e6 ? nf2.format(v / 1e6) + ' млн' : v >= 1e3 ? nf0.format(v / 1e3) + ' тыс' : nf0.format(v); }
+
+function chartWidth(sel) {
+  const w = $(sel).clientWidth || 760;
+  return Math.round(Math.max(300, Math.min(760, w)));
+}
+let chartResizeT = null, chartLastW = window.innerWidth;
+window.addEventListener('resize', () => {
+  if (Math.abs(window.innerWidth - chartLastW) < 20) return;
+  chartLastW = window.innerWidth;
+  clearTimeout(chartResizeT);
+  chartResizeT = setTimeout(() => { const R = compute(state); renderIncomeChart(R); renderQChart(R); }, 200);
+});
+
+function renderIncomeChart(R) {
+  // ширина графика = ширина блока, чтобы на телефоне подписи не мельчали
+  const W = chartWidth('#chart-inc'), narrow = W < 520, H = narrow ? 260 : 300, L = narrow ? 56 : 64, Rr = narrow ? 8 : 16, T = 22, B = 36;
+  const fs = narrow ? 10 : 11;
+  const iw = W - L - Rr, ih = H - T - B;
+  const vals = R.mo.map((x) => x.cumInc);
+  const ymax = niceMax(Math.max(R.thr * 1.25, ...vals));
+  const x = (i) => L + iw * (i + 0.5) / 12;
+  const y = (v) => T + ih * (1 - v / ymax);
+  let g = '';
+  for (let k = 0; k <= 4; k++) {
+    const v = ymax * k / 4;
+    g += '<line x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="#E4EBED"/>';
+    g += '<text x="' + (L - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="' + fs + '" fill="#5C5C5C">' + axisFmt(v) + '</text>';
+  }
+  // зона НДС
+  if (R.vatOn && R.startInYear) {
+    const x0 = L + iw * R.start / 12;
+    g += '<rect x="' + x0 + '" y="' + T + '" width="' + (W - Rr - x0) + '" height="' + ih + '" fill="#F7E7DA" opacity=".55"/>';
+    const tight = (W - Rr - x0) < 64;
+    g += '<text x="' + (tight ? W - Rr - 3 : x0 + 6) + '" y="' + (T + 14) + '"' + (tight ? ' text-anchor="end"' : '') + ' font-size="11" font-weight="600" fill="#D1884F">НДС ' + [...new Set(R.mo.filter((m) => m.payer).map((m) => m.R))].join('→') + '%</text>';
+  }
+  MONTHS.forEach((m, i) => { g += '<text x="' + x(i) + '" y="' + (H - 12) + '" text-anchor="middle" font-size="' + fs + '" fill="#5C5C5C">' + (narrow ? m.slice(0, 1) : m.slice(0, 3)) + '</text>'; });
+  // порог
+  g += '<line x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(R.thr) + '" y2="' + y(R.thr) + '" stroke="#D1884F" stroke-width="2" stroke-dasharray="6 5"/>';
+  g += narrow
+    ? '<text x="' + (L + 4) + '" y="' + (y(R.thr) - 6) + '" text-anchor="start" font-size="11" font-weight="600" fill="#D1884F">порог ' + mln(R.thr) + '</text>'
+    : '<text x="' + (W - Rr) + '" y="' + (y(R.thr) - 7) + '" text-anchor="end" font-size="12" font-weight="600" fill="#D1884F">порог ' + mln(R.thr) + '</text>';
+  // область и линия
+  const pts = vals.map((v, i) => [x(i), y(v)]);
+  const factN = R.mo.findIndex((m) => m.fc);
+  const nFact = factN === -1 ? 12 : factN;
+  const area = 'M' + x(0) + ',' + y(0) + ' ' + pts.map((p) => 'L' + p[0] + ',' + p[1]).join(' ') + ' L' + x(11) + ',' + y(0) + 'Z';
+  g += '<path d="' + area + '" fill="rgba(0,138,170,.10)"/>';
+  if (nFact > 0) g += '<path d="M' + pts.slice(0, nFact).map((p) => p.join(',')).join(' L') + '" fill="none" stroke="#008AAA" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>';
+  if (nFact < 12) g += '<path d="M' + pts.slice(Math.max(0, nFact - 1)).map((p) => p.join(',')).join(' L') + '" fill="none" stroke="#2BB6D9" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/>';
+  pts.forEach((p, i) => {
+    const over = R.exceedMonth === i;
+    g += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="' + (over ? 6 : 3.5) + '" fill="' + (over ? '#D1884F' : (R.mo[i].fc ? '#fff' : '#008AAA')) + '" stroke="' + (R.mo[i].fc ? '#2BB6D9' : '#fff') + '" stroke-width="2"><title>' + MONTHS[i] + ': ' + mln(vals[i]) + (R.mo[i].fc ? ' (прогноз)' : '') + '</title></circle>';
+  });
+  if (R.exceedMonth !== null) {
+    const p = pts[R.exceedMonth];
+    if (narrow) {
+      // на узком экране — подпись справа-снизу от точки, чтобы не накрывать порог
+      const right = p[0] < W / 2;
+      g += '<text x="' + (p[0] + (right ? 10 : -10)) + '" y="' + Math.min(T + ih - 6, p[1] + 18) + '" text-anchor="' + (right ? 'start' : 'end') + '" font-size="11" font-weight="700" fill="#333">превышение: ' + MONTHS[R.exceedMonth].slice(0, 3).toLowerCase() + '</text>';
+    } else {
+      const tx = Math.min(Math.max(p[0], L + 70), W - Rr - 70);
+      g += '<text x="' + tx + '" y="' + Math.max(T + 30, p[1] - 14) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#333">превышение в ' + MONTHS_PREP[R.exceedMonth] + '</text>';
+    }
+  }
+  $('#chart-inc').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Доход нарастающим итогом по месяцам и порог НДС">' + g + '</svg>';
+  $('#legend-inc').innerHTML = '<span><i style="background:#008AAA"></i>Доход УСН с начала года (факт)</span>' + (nFact < 12 ? '<span><i style="background:#2BB6D9"></i>Прогноз</span>' : '') + '<span><i style="background:#D1884F"></i>Порог освобождения</span>' + (R.vatOn && R.startInYear ? '<span><i style="background:#F7E7DA"></i>Месяцы с НДС</span>' : '');
+}
+
+function renderQChart(R) {
+  const W = chartWidth('#chart-q'), narrow = W < 520, H = narrow ? 270 : 290, L = narrow ? 58 : 64, Rr = narrow ? 8 : 16, T = 28, B = 36;
+  const iw = W - L - Rr, ih = H - T - B;
+  // нарастающим итогом: 3, 6, 9, 12 месяцев
+  let insAcc = 0;
+  const data = R.per.map((p, i) => {
+    insAcc += R.qs[i].empCon + R.qs[i].ip;
+    return { usn: Math.max(0, p.tax), vat: Math.max(0, p.vatPayCum), ins: insAcc, fc: p.fc, rev: p.recCum };
+  });
+  const CUM = ['3 мес.', '6 мес.', '9 мес.', '12 мес.'];
+  const share = (v, rev) => rev > 0 ? nf2.format(Math.round(v / rev * 1000) / 10) + '%' : '—';
+  const ymax = niceMax(Math.max(1, ...data.map((d) => d.usn + d.vat + d.ins)) * 1.18);
+  const y = (v) => T + ih * (1 - v / ymax);
+  let g = '';
+  for (let k = 0; k <= 4; k++) {
+    const v = ymax * k / 4;
+    g += '<line x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="#E4EBED"/>';
+    g += '<text x="' + (L - 8) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="11" fill="#5C5C5C">' + axisFmt(v) + '</text>';
+  }
+  const bw = Math.min(90, iw / 4 * 0.5);
+  data.forEach((d, i) => {
+    const cx = L + iw * (i + 0.5) / 4;
+    let acc = 0;
+    [['usn', '#008AAA', 'УСН'], ['vat', '#D1884F', 'НДС'], ['ins', '#2BB6D9', 'Взносы']].forEach(([k, c, n]) => {
+      const v = d[k]; if (v <= 0) return;
+      const y1 = y(acc + v), h = y(acc) - y1;
+      g += '<rect x="' + (cx - bw / 2) + '" y="' + y1 + '" width="' + bw + '" height="' + Math.max(0, h - 2) + '" rx="4" fill="' + c + '" opacity="' + (d.fc ? .55 : 1) + '"><title>' + PERIODS[i] + ' — ' + n + ': ' + rub(v) + ' (' + share(v, d.rev) + ' выручки)</title></rect>';
+      if (h >= 20) g += '<text x="' + cx + '" y="' + (y1 + h / 2 + 3) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#fff" pointer-events="none">' + share(v, d.rev) + '</text>';
+      acc += v;
+    });
+    g += '<text x="' + cx + '" y="' + (y(acc) - 22) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#333">' + axisFmt(Math.round(acc)) + '</text>';
+    g += '<text x="' + cx + '" y="' + (y(acc) - 8) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#D1884F">' + share(acc, d.rev) + (narrow ? '' : ' выручки') + '</text>';
+    g += '<text x="' + cx + '" y="' + (H - 12) + '" text-anchor="middle" font-size="12" fill="#5C5C5C">' + CUM[i] + (d.fc ? ' · прогноз' : '') + '</text>';
+  });
+  $('#chart-q').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Налоги и взносы нарастающим итогом за 3, 6, 9 и 12 месяцев">' + g + '</svg>';
+
+  // Таблица: доля каждого налога в выручке нарастающим итогом
+  const yr = data[3];
+  const cols = data;
+  const cell = (v, rev) => '<td><b>' + share(v, rev) + '</b><span class="share__sum">' + rub(v) + '</span></td>';
+  const line = (label, dot, k) => '<tr><td><i style="background:' + dot + '"></i>' + label + '</td>' + cols.map((d) => cell(d[k], d.rev)).join('') + '</tr>';
+  $('#q-share').innerHTML =
+    '<table class="share"><thead><tr><th>Доля в выручке</th>' + PERIODS.map((q, i) => '<th>' + q + (data[i].fc ? '<span class="tag">прогноз</span>' : '') + '</th>').join('') + '</tr></thead><tbody>' +
+    '<tr class="share__rev"><td>Выручка (поступления)</td>' + cols.map((d) => '<td>' + rub(d.rev) + '</td>').join('') + '</tr>' +
+    line('УСН', 'var(--teal-600)', 'usn') +
+    (yr.vat > 0 ? line('НДС', 'var(--terracotta-500)', 'vat') : '') +
+    line('Взносы', 'var(--cyan-500)', 'ins') +
+    '<tr class="share__tot"><td>Все налоги и взносы</td>' + cols.map((d) => cell(d.usn + d.vat + d.ins, d.rev)).join('') + '</tr>' +
+    '</tbody></table>';
+}
+
+/* ---------- Платёжный календарь ---------- */
+function due(y, m, d) {
+  const dt = new Date(y, m, d);
+  while (dt.getDay() === 0 || dt.getDay() === 6) dt.setDate(dt.getDate() + 1);
+  return dt;
+}
+function buildCalendarItems(R) {
+  const Y = state.year, items = [];
+  const add = (dt, title, sub, amount, color, x) => items.push(Object.assign({ dt, title, sub, amount, color, kind: '', fc: false, parts: null }, x || {}));
+  const COL = { usn: '#008AAA', vat: '#D1884F', ins: '#2BB6D9' };
+  const P = R.per;
+  ['I квартал', 'полугодие', '9 месяцев'].forEach((n, i) => {
+    if (P[i].payable > 0) {
+      add(due(Y, 3 + i * 3, 25), 'Уведомление об авансе УСН за ' + n, 'сумма ' + rub(P[i].payable), null, COL.usn, { kind: 'Уведомление', fc: P[i].fc, report: true, xlOnly: true });
+      add(due(Y, 3 + i * 3, 28), 'Аванс УСН за ' + n, 'уведомление — до 25-го', P[i].payable, COL.usn, { kind: 'УСН', fc: P[i].fc });
+    }
+  });
+  const yd = R.isIP ? due(Y + 1, 3, 28) : due(Y + 1, 2, 28);
+  const ydecl = R.isIP ? due(Y + 1, 3, 25) : due(Y + 1, 2, 25);
+  add(ydecl, 'Декларация по УСН за ' + Y, '', null, COL.usn, { kind: 'Отчётность', report: true });
+  if (P[3].payable > 0) add(yd, 'Налог УСН за ' + Y + ' год', 'доплата по итогам года', P[3].payable, COL.usn, { kind: 'УСН', fc: P[3].fc });
+  if (R.vatOn && R.startInYear) {
+    R.qs.forEach((q, i) => {
+      const anyPayer = R.mo.slice(i * 3, i * 3 + 3).some((m) => m.payer);
+      if (!anyPayer) return;
+      const pay = Math.max(0, q.vatPay);
+      const part = Math.round(pay / 3);
+      const mm = i * 3 + 3;
+      add(due(Y, mm, 25), 'Декларация по НДС за ' + QNAMES[i], 'электронно', null, COL.vat, { kind: 'Отчётность', report: true, fc: q.fc });
+      for (let j = 0; j < 3; j++) {
+        const amt = j < 2 ? part : pay - part * 2;
+        if (pay > 0) add(due(Y, mm + j, 28), 'НДС за ' + QNAMES[i], (j + 1) + '/3 часть', amt, COL.vat, { kind: 'НДС', fc: q.fc });
+      }
+    });
+  }
+  if (state.staff === 'yes') {
+    R.emp.forEach((e, m) => {
+      if (e.contrib + e.ndfl <= 0) return;
+      const mn = MONTHS[m].toLowerCase();
+      add(due(Y, m + 1, 25), 'Уведомление по взносам и НДФЛ за ' + mn, 'сумма ' + rub(e.contrib + e.ndfl), null, COL.ins, { kind: 'Уведомление', report: true, xlOnly: true });
+      add(due(Y, m + 1, 28), 'Взносы и НДФЛ за ' + mn, 'взносы ' + rub(e.contrib) + ' · НДФЛ ' + rub(e.ndfl), e.contrib + e.ndfl, COL.ins, { kind: 'Взносы и НДФЛ' });
+    });
+  }
+  if (R.isIP) {
+    add(due(Y, 11, 28), 'Фиксированные взносы ИП за ' + Y, 'можно платить частями в течение года', R.ipFixed, COL.ins, { kind: 'Взносы ИП' });
+    const d = R.C.ip1Due;
+    if (R.ip1 > 0) add(due(d[0], d[1], d[2]), 'Взнос 1% ИП за ' + Y, 'с дохода свыше 300 000 ₽', R.ip1, COL.ins, { kind: 'Взносы ИП', fc: P[3].fc });
+  }
+  items.sort((a, b) => a.dt - b.dt);
+  return items;
+}
+
+function renderCalendar(R) {
+  const items = buildCalendarItems(R).filter((it) => !it.xlOnly);
+  const groups = new Map();
+  items.forEach((it) => {
+    const k = it.dt.getFullYear() * 12 + it.dt.getMonth();
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(it);
+  });
+  let h = '';
+  groups.forEach((arr, k) => {
+    const y = Math.floor(k / 12), m = k % 12;
+    const sum = arr.reduce((a, x) => a + (x.amount || 0), 0);
+    h += '<div class="cal__m"><div class="cal__mh">' + MONTHS[m] + ' ' + y + (sum ? '<span>' + rub(sum) + '</span>' : '') + '</div>';
+    arr.forEach((it) => {
+      h += '<div class="cal__i"><span class="cal__d">' + String(it.dt.getDate()).padStart(2, '0') + '.' + String(it.dt.getMonth() + 1).padStart(2, '0') + '</span>' +
+        '<span class="cal__t"><span class="cal__dot" style="background:' + it.color + '"></span>' + it.title + (it.sub ? '<small>' + it.sub + '</small>' : '') + '</span>' +
+        '<span class="cal__a">' + (it.amount === null ? 'сдать' : rub(it.amount)) + '</span></div>';
+    });
+    h += '</div>';
+  });
+  $('#cal').innerHTML = h || '<p class="field__hint">Заполните доходы, чтобы увидеть платежи.</p>';
+}
+
+/* ---------- Как посчитано ---------- */
+function renderHow(R) {
+  const P = R.per, Y = P[3], C = R.C, s = state;
+  const L = [];
+  const recYear = P[3].recCum;
+  const vatOutYear = Y.vatOutCum;
+  L.push('<b>Доход.</b> Поступления за год' + (P[3].fc ? ' (с прогнозом)' : '') + ': ' + rub(recYear) + '. ' +
+    (vatOutYear > 0 ? 'НДС в доходы УСН не включается, поэтому доход УСН: ' + rub(recYear) + ' − ' + rub(vatOutYear) + ' = <b>' + rub(R.yearInc) + '</b>.' : 'Это и есть доход УСН: <b>' + rub(R.yearInc) + '</b>.'));
+  if (R.prev > R.thr) L.push('<b>Порог НДС.</b> Доход за ' + (s.year - 1) + ' год ' + rub(R.prev) + ' больше ' + rub(R.thr) + ' → освобождения нет с 1 января ' + s.year + '.');
+  else if (R.exceedMonth !== null) L.push('<b>Порог НДС.</b> Доход за ' + (s.year - 1) + ' год ' + rub(R.prev) + ' — в пределах порога. В ' + s.year + ' году доход с начала года к концу ' + MONTHS_GEN[R.exceedMonth] + ' составил ' + rub(R.mo[R.exceedMonth].cumInc) + ' &gt; ' + rub(R.thr) + ' → НДС с 1 ' + (R.exceedMonth < 11 ? MONTHS_GEN[R.exceedMonth + 1] : 'января следующего года') + '.');
+  else L.push('<b>Порог НДС.</b> Доход за год ' + rub(R.yearInc) + ' не превышает ' + rub(R.thr) + ' → освобождение сохраняется.');
+  if (R.vatOn && R.startInYear) {
+    const rates = [...new Set(R.mo.filter((m) => m.payer).map((m) => m.R))];
+    const f = s.pricing === 'top' ? 'выручка × ставка' : 'поступления × ставка / (100 + ставка), например ' + rates[0] + '/' + (100 + rates[0]);
+    L.push('<b>НДС.</b> Ставка ' + rates.join(' → ') + '%. Считаем по формуле: ' + f + '. Начислено за год ' + rub(Y.vatOutCum) +
+      (R.kind === '22' ? ', вычет входящего НДС ' + rub(Y.vatDedCum) : ' (при 5% и 7% вычетов нет)') + ' → к уплате <b>' + rub(R.vatYear) + '</b>. Каждый квартал платится тремя равными частями до 28-го числа.');
+  }
+  if (R.isD) {
+    const lim = (R.isIP && s.staff !== 'yes') ? '100%' : '50%';
+    L.push('<b>Налог УСН.</b> ' + rub(R.yearInc) + ' × ' + pct(R.rate * 100) + ' = ' + rub(Y.taxCalc) + '. Взносы к уменьшению: ' + rub(Y.redAvail) +
+      (R.isIP ? ' (в том числе фиксированные ' + rub(R.ipFixed) + ' и 1% ' + rub(R.ip1) + ')' : '') + ', лимит — ' + lim + ' налога (' + rub(Y.redCap) + '). Уменьшаем на ' + rub(Y.red) + ' → налог за год <b>' + rub(Y.tax) + '</b>.');
+  } else {
+    L.push('<b>Налог УСН.</b> Доходы ' + rub(R.yearInc) + ' − расходы ' + rub(Y.expCum) + ' = база ' + rub(Y.base) + '. ' + pct(R.rate * 100) + ' от базы = ' + rub(Y.taxCalc) +
+      '; минимальный налог 1% = ' + rub(Y.minTax) + ' → платим ' + (Y.minApplied ? 'минимальный' : 'обычный') + ': <b>' + rub(Y.tax) + '</b>.');
+  }
+  L.push('<b>Авансы.</b> За I квартал ' + rub(P[0].payable) + ', за полугодие ' + rub(P[1].payable) + ', за 9 месяцев ' + rub(P[2].payable) + ', по итогам года ' + (P[3].payable >= 0 ? 'доплата ' + rub(P[3].payable) : 'переплата ' + rub(-P[3].payable)) + '. Каждый аванс — это налог нарастающим итогом минус авансы, начисленные раньше.');
+  if (R.isIP) L.push('<b>Взносы ИП.</b> Фиксированные ' + rub(R.ipFixed) + ' + 1% × (' + rub(R.ip1Base) + ' − 300 000) = ' + rub(R.ip1) + (R.ip1 >= C.ip1Max ? ' (достигнут максимум)' : '') + '. ' + (R.isD ? 'База для 1% — доход УСН.' : 'На «Д−Р» база для 1% — доходы минус расходы.'));
+  if (s.staff === 'yes') L.push('<b>Сотрудники.</b> ФОТ за год ' + rub(Y.empSal) + ', взносы ' + rub(Y.empCon) + ', НДФЛ ' + rub(Y.empNdfl) + ' (удерживается из зарплаты и в итог нагрузки не входит).');
+  L.push('<b>Итого платежей за год:</b> УСН ' + rub(Y.tax) + ' + НДС ' + rub(Math.max(0, R.vatYear)) + ' + взносы ' + rub(R.insYear) + ' = <b>' + rub(R.total) + '</b>.');
+  $('#how').innerHTML = '<ol>' + L.map((x) => '<li>' + x + '</li>').join('') + '</ol>';
+}
+
+/* ---------- Зависящие от года тексты ---------- */
+function renderYearTexts(R) {
+  const C = R.C, Y = state.year;
+  $('#hk-thr').innerHTML = nf2.format(C.vatThreshold / 1e6) + ' <small>млн ₽</small>';
+  $('#hk-thr-l').textContent = 'порог дохода для освобождения от НДС в ' + Y + ' году' + (Y === 2027 ? ' (заморожен законом № 228-ФЗ)' : '');
+  $('#hk-red-l').textContent = 'льготные ставки без вычетов: до ' + mln(C.r5Limit).replace(' ₽', '') + ' / ' + mln(C.usnLimit) + (C.limitsConfirmed ? '' : ' (проект)');
+  $('#prev-label').textContent = 'Доход за ' + (Y - 1) + ' год, ₽';
+  $('#year-hint').textContent = C.limitsConfirmed ? 'Все значения утверждены' : 'Часть лимитов — по проекту, см. раздел «2027»';
+  $$('.js-r5').forEach((e) => (e.textContent = mln(C.r5Limit)));
+  $$('.js-usn').forEach((e) => (e.textContent = mln(C.usnLimit)));
+  $$('[data-tl]').forEach((e) => e.classList.toggle('tl--now', e.dataset.tl === String(Y)));
+}
+
+/* ---------- Главный рендер ---------- */
+function render(opts = {}) {
+  syncControls();
+  const R = compute(state);
+  updateStaffNotes(R);
+  if (!opts.keepTable) { renderDataTable(R); renderPayTable(R); }
+  else {
+    const errSet = new Set(R.M.errors.map(([a, i]) => a + i));
+    $$('#data-tbl input[data-arr]').forEach((el) => el.classList.toggle('is-error', errSet.has(el.dataset.arr + el.dataset.i)));
+  }
+  updateInputNotes(R);
+  renderYearTexts(R);
+  renderStatus(R);
+  renderKpis(R);
+  renderIncomeChart(R);
+  renderTable(R);
+  renderQChart(R);
+  renderCalendar(R);
+  renderHow(R);
+  save();
+  window.__calc = R; // для отладки
+}
+
+/* ---------- События ---------- */
+function convertInput(to) {
+  if (to === state.input) return;
+  if (to === 'month') {
+    ['rev', 'exp', 'iv'].forEach((k) => {
+      const arr = Array(12).fill(null);
+      let prev = 0;
+      for (let q = 0; q < 4; q++) {
+        const v = parseNum(state.q[k][q]);
+        if (v === null) { if (k === 'rev') break; else continue; }
+        const part = Math.round((v - prev) / 3);
+        for (let j = 0; j < 3; j++) arr[q * 3 + j] = j < 2 ? part : (v - prev) - part * 2;
+        prev = v;
+      }
+      state.m[k] = arr;
+    });
+  } else {
+    ['rev', 'exp', 'iv'].forEach((k) => {
+      const arr = [null, null, null, null];
+      let cum = 0;
+      for (let q = 0; q < 4; q++) {
+        let any = false;
+        for (let j = 0; j < 3; j++) { const v = parseNum(state.m[k][q * 3 + j]); if (v !== null) { any = true; cum += v; } }
+        if (!any && k === 'rev') break;
+        arr[q] = any ? cum : null;
+      }
+      state.q[k] = arr;
+    });
+  }
+  state.input = to;
+}
+
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('.seg[data-key] button');
+  if (!b) return;
+  const k = b.closest('.seg').dataset.key;
+  let v = b.dataset.v;
+  if (k === 'year') v = +v;
+  if (k === 'input') { convertInput(v); render(); return; }
+  if (k === 'payMode' && v === 'month' && state.pay.fot.every((x) => x === null)) {
+    const n = Math.round(parseNum(state.staffCount) || 0), sal = parseNum(state.salary) || 0;
+    state.pay.fot = Array(12).fill(n * sal || null);
+  }
+  if (state[k] === v) return;
+  state[k] = v;
+  render();
+});
+document.addEventListener('input', (e) => {
+  const el = e.target;
+  if (el.dataset.num) { state[el.dataset.num] = parseNum(el.value); render({ keepTable: true }); }
+  else if (el.dataset.pay) { state.pay[el.dataset.pay][+el.dataset.i] = parseNum(el.value); updatePayTotal(); render({ keepTable: true }); }
+  else if (el.dataset.arr) {
+    const src = state.input === 'quarter' ? state.q : state.m;
+    src[el.dataset.arr][+el.dataset.i] = parseNum(el.value);
+    render({ keepTable: true });
+  }
+});
+document.addEventListener('change', (e) => {
+  const el = e.target;
+  if (el.dataset.sel) { state[el.dataset.sel] = el.value; render(); }
+  else if (el.dataset.arr || el.dataset.num || el.dataset.pay) { el.value = fmtInput(parseNum(el.value)); if (el.dataset.arr || el.dataset.pay) render(); }
+});
+$('#btn-example').addEventListener('click', () => { const y = state.year; state = clone(EXAMPLE); state.year = y; render(); });
+$('#btn-reset').addEventListener('click', () => {
+  state.q = { rev: [null, null, null, null], exp: [null, null, null, null], iv: [null, null, null, null] };
+  state.m = { rev: Array(12).fill(null), exp: Array(12).fill(null), iv: Array(12).fill(null) };
+  state.prevIncome = null; state.vatStart = 'auto';
+  render();
+});
+$('#btn-pay-fill').addEventListener('click', () => {
+  state.pay.fot = Array(12).fill(state.pay.fot[0]);
+  render();
+});
+$('#btn-even').addEventListener('click', () => {
+  const t = prompt('Годовая сумма поступлений, ₽', '24 000 000');
+  const v = parseNum(t);
+  if (v === null) return;
+  state.m.rev = Array(12).fill(Math.round(v / 12));
+  if (state.obj === 'dr') {
+    const e2 = parseNum(prompt('Годовая сумма расходов, ₽ (без зарплаты и взносов)', '0'));
+    if (e2 !== null) state.m.exp = Array(12).fill(Math.round(e2 / 12));
+  }
+  render();
+});
+
+/* ---------- Переходы по якорям (меню, кнопки) ---------- */
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a || e.defaultPrevented) return;
+  const id = decodeURIComponent(a.getAttribute('href').slice(1));
+  const t = id ? document.getElementById(id) : null;
+  if (id && !t) return;
+  e.preventDefault();
+  const hh = (document.querySelector('.site-header')?.offsetHeight || 72) + 12;
+  const y = (!t || id === 'top') ? 0 : t.getBoundingClientRect().top + window.scrollY - hh;
+  window.scrollTo({ top: Math.max(0, y), behavior: still ? 'auto' : 'smooth' });
+  if (t && id !== 'top') { t.setAttribute('tabindex', '-1'); t.focus({ preventScroll: true }); }
+  try { history.replaceState(null, '', '#' + id); } catch (err) { /* в предпросмотре адрес может быть недоступен */ }
+});
+
+/* ============================================================
+   ВЫГРУЗКА В EXCEL — собственный генератор .xlsx (без библиотек)
+   ============================================================ */
+const XL = (() => {
+  const enc = new TextEncoder();
+  const CRC = new Uint32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+  const crc32 = (u8) => { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  async function deflate(u8) {
+    if (typeof CompressionStream === 'undefined') return null;
+    try {
+      const s = new Blob([u8]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+      return new Uint8Array(await new Response(s).arrayBuffer());
+    } catch (e) { return null; }
+  }
+  async function zip(files) {
+    const parts = [], central = []; let offset = 0;
+    for (const f of files) {
+      const name = enc.encode(f.name), raw = enc.encode(f.data), crc = crc32(raw);
+      const comp = await deflate(raw);
+      const method = comp ? 8 : 0, data = comp || raw;
+      const lh = new DataView(new ArrayBuffer(30));
+      lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+      lh.setUint16(8, method, true); lh.setUint16(10, 0, true); lh.setUint16(12, 0x21, true);
+      lh.setUint32(14, crc, true); lh.setUint32(18, data.length, true); lh.setUint32(22, raw.length, true);
+      lh.setUint16(26, name.length, true); lh.setUint16(28, 0, true);
+      parts.push(new Uint8Array(lh.buffer), name, data);
+      const ch = new DataView(new ArrayBuffer(46));
+      ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+      ch.setUint16(10, method, true); ch.setUint16(12, 0, true); ch.setUint16(14, 0x21, true);
+      ch.setUint32(16, crc, true); ch.setUint32(20, data.length, true); ch.setUint32(24, raw.length, true);
+      ch.setUint16(28, name.length, true); ch.setUint32(42, offset, true);
+      central.push(new Uint8Array(ch.buffer), name);
+      offset += 30 + name.length + data.length;
+    }
+    const cd = central.reduce((a, b) => a + b.length, 0);
+    const end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+    end.setUint32(12, cd, true); end.setUint32(16, offset, true);
+    return new Blob([...parts, ...central, new Uint8Array(end.buffer)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
+  const esc = (s) => String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const colName = (i) => { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+  const serial = (d) => (Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(1899, 11, 30)) / 86400000;
+
+  const TEAL = '008AAA', CYAN100 = 'E3F5FB', CYAN050 = 'F3FBFD', TERRA = 'D1884F', TERRA100 = 'F7E7DA', GRAY = '5C5C5C';
+  const ST = {
+    def: {},
+    title: { font: { b: 1, sz: 15, color: TEAL }, v: 'center' },
+    sub: { font: { color: GRAY }, wrap: 1, v: 'top' },
+    sect: { font: { b: 1, sz: 12, color: TERRA }, v: 'bottom' },
+    th: { font: { b: 1, color: 'FFFFFF' }, fill: TEAL, border: 1, h: 'center', v: 'center', wrap: 1 },
+    thL: { font: { b: 1, color: 'FFFFFF' }, fill: TEAL, border: 1, v: 'center', wrap: 1 },
+    txt: { border: 1, wrap: 1, v: 'center' },
+    txtC: { border: 1, h: 'center', v: 'center' },
+    money: { border: 1, fmt: 164, v: 'center' },
+    fcMoney: { border: 1, fmt: 164, font: { i: 1, color: '8A8A8A' }, v: 'center' },
+    grp: { font: { b: 1, color: TEAL }, fill: CYAN100, border: 1, v: 'center' },
+    tTxt: { font: { b: 1 }, border: 1, wrap: 1, v: 'center' },
+    tMoney: { font: { b: 1 }, border: 1, fmt: 164, v: 'center' },
+    pTxt: { font: { b: 1, color: TEAL }, fill: CYAN050, border: 1, wrap: 1, v: 'center' },
+    pMoney: { font: { b: 1, color: TEAL }, fill: CYAN050, border: 1, fmt: 164, v: 'center' },
+    note: { wrap: 1, v: 'top', font: { color: '333333' } },
+    noteWarn: { wrap: 1, v: 'top', fill: TERRA100, font: { color: '7A4A22' } },
+    date: { border: 1, fmt: 165, h: 'center', v: 'center' },
+    status: { border: 1, h: 'center', v: 'center', font: { b: 1 } },
+    pct: { border: 1, fmt: 166, v: 'center', font: { b: 1 } },
+    tipH: { font: { b: 1, color: TEAL, sz: 12 }, fill: CYAN100, wrap: 1, v: 'center' },
+    tipCtx: { font: { i: 1, sz: 10, color: GRAY }, fill: CYAN100, wrap: 1 },
+    tipS: { font: { b: 1, sz: 9, color: GRAY } },
+    tipR: { wrap: 1, v: 'top' },
+    tipV: { fmt: 164, v: 'top' },
+    tipVx: { h: 'right', v: 'top' },
+    tipRt: { font: { b: 1 }, btop: 1, wrap: 1, v: 'top' },
+    tipVt: { font: { b: 1 }, btop: 1, fmt: 164, v: 'top' },
+    tipVtx: { font: { b: 1 }, btop: 1, h: 'right', v: 'top' },
+    tipN: { font: { i: 1, sz: 10, color: GRAY }, wrap: 1, v: 'top' },
+    howN: { h: 'center', v: 'top', font: { b: 1, color: TEAL } }
+  };
+  const KEYS = Object.keys(ST);
+  const IDX = {}; KEYS.forEach((k, i) => (IDX[k] = i));
+
+  function stylesXml() {
+    const fonts = ['<font><sz val="11"/><color rgb="FF000000"/><name val="Calibri"/><family val="2"/></font>'];
+    const fills = ['<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>'];
+    const borders = ['<border><left/><right/><top/><bottom/><diagonal/></border>',
+      '<border><left style="thin"><color rgb="FFD5DFE2"/></left><right style="thin"><color rgb="FFD5DFE2"/></right><top style="thin"><color rgb="FFD5DFE2"/></top><bottom style="thin"><color rgb="FFD5DFE2"/></bottom><diagonal/></border>',
+      '<border><left/><right/><top style="thin"><color rgb="FFB9C7CC"/></top><bottom/><diagonal/></border>'];
+    const fid = (f) => { if (!f) return 0; const x = '<font>' + (f.b ? '<b/>' : '') + (f.i ? '<i/>' : '') + '<sz val="' + (f.sz || 11) + '"/><color rgb="FF' + (f.color || '000000') + '"/><name val="Calibri"/><family val="2"/></font>'; let i = fonts.indexOf(x); if (i < 0) { fonts.push(x); i = fonts.length - 1; } return i; };
+    const flid = (c) => { if (!c) return 0; const x = '<fill><patternFill patternType="solid"><fgColor rgb="FF' + c + '"/><bgColor indexed="64"/></patternFill></fill>'; let i = fills.indexOf(x); if (i < 0) { fills.push(x); i = fills.length - 1; } return i; };
+    const xfs = KEYS.map((k) => {
+      const s = ST[k];
+      const al = '<alignment' + (s.h ? ' horizontal="' + s.h + '"' : '') + (s.v ? ' vertical="' + s.v + '"' : '') + (s.wrap ? ' wrapText="1"' : '') + '/>';
+      return '<xf numFmtId="' + (s.fmt || 0) + '" fontId="' + fid(s.font) + '" fillId="' + flid(s.fill) + '" borderId="' + (s.border ? 1 : s.btop ? 2 : 0) + '" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">' + al + '</xf>';
+    });
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<numFmts count="3"><numFmt numFmtId="164" formatCode="#,##0 &quot;₽&quot;;-#,##0 &quot;₽&quot;;0 &quot;₽&quot;"/><numFmt numFmtId="165" formatCode="dd.mm.yyyy"/><numFmt numFmtId="166" formatCode="0.0%"/></numFmts>' +
+      '<fonts count="' + fonts.length + '">' + fonts.join('') + '</fonts>' +
+      '<fills count="' + fills.length + '">' + fills.join('') + '</fills>' +
+      '<borders count="' + borders.length + '">' + borders.join('') + '</borders>' +
+      '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+      '<cellXfs count="' + xfs.length + '">' + xfs.join('') + '</cellXfs>' +
+      '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
+      '<dxfs count="3">' +
+      '<dxf><font><b/><color rgb="FF1E7B34"/></font><fill><patternFill><bgColor rgb="FFDDF3E3"/></patternFill></fill></dxf>' +
+      '<dxf><font><b/><color rgb="FFB03A2E"/></font><fill><patternFill><bgColor rgb="FFFBE9E7"/></patternFill></fill></dxf>' +
+      '<dxf><font><b/><color rgb="FF9A5B2A"/></font><fill><patternFill><bgColor rgb="FFF7E7DA"/></patternFill></fill></dxf>' +
+      '</dxfs><tableStyles count="0"/></styleSheet>';
+  }
+
+  function sheetXml(sh) {
+    const rows = sh.rows.map((cells, ri) => {
+      const r = ri + 1, ht = sh.heights[r];
+      const cs = (cells || []).map((c, ci) => {
+        if (!c) return '';
+        const ref = colName(ci) + r, s = ' s="' + (IDX[c.s || 'def'] || 0) + '"';
+        if (c.f) return '<c r="' + ref + '"' + s + '><f>' + esc(c.f) + '</f></c>';
+        if (c.v === undefined || c.v === null || c.v === '') return '<c r="' + ref + '"' + s + '/>';
+        if (c.v instanceof Date) return '<c r="' + ref + '"' + s + '><v>' + serial(c.v) + '</v></c>';
+        if (typeof c.v === 'number') return '<c r="' + ref + '"' + s + '><v>' + (c.raw ? c.v : Math.round(c.v)) + '</v></c>';
+        return '<c r="' + ref + '"' + s + ' t="inlineStr"><is><t xml:space="preserve">' + esc(c.v) + '</t></is></c>';
+      }).join('');
+      return '<row r="' + r + '"' + (ht ? ' ht="' + ht + '" customHeight="1"' : '') + '>' + cs + '</row>';
+    }).join('');
+    const f = sh.freeze;
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+      '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>' +
+      '<sheetViews><sheetView workbookViewId="0"' + (sh.grid === false ? ' showGridLines="0"' : '') + '>' +
+      (f ? '<pane ySplit="' + f + '" topLeftCell="A' + (f + 1) + '" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A' + (f + 1) + '" sqref="A' + (f + 1) + '"/>' : '') +
+      '</sheetView></sheetViews><sheetFormatPr defaultRowHeight="15"/>' +
+      '<cols>' + sh.cols.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>' +
+      '<sheetData>' + rows + '</sheetData>' +
+      (sh.filter ? '<autoFilter ref="' + sh.filter + '"/>' : '') +
+      (sh.merges.length ? '<mergeCells count="' + sh.merges.length + '">' + sh.merges.map((m) => '<mergeCell ref="' + m + '"/>').join('') + '</mergeCells>' : '') +
+      sh.cf.map((c) => '<conditionalFormatting sqref="' + c.sqref + '">' + c.rules.map((r, i) => '<cfRule type="cellIs" dxfId="' + r.dxf + '" priority="' + (i + 1) + '" operator="equal"><formula>"' + esc(r.eq) + '"</formula></cfRule>').join('') + '</conditionalFormatting>').join('') +
+      (sh.dv.length ? '<dataValidations count="' + sh.dv.length + '">' + sh.dv.map((d) => '<dataValidation type="list" allowBlank="1" showInputMessage="1" showErrorMessage="1" sqref="' + d.sqref + '"><formula1>"' + esc(d.list.join(',')) + '"</formula1></dataValidation>').join('') + '</dataValidations>' : '') +
+      '<pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/>' +
+      '<pageSetup paperSize="9" orientation="' + (sh.portrait ? 'portrait' : 'landscape') + '" fitToWidth="1" fitToHeight="0"/>' +
+      '</worksheet>';
+  }
+
+  function build(sheets) {
+    const abs = (ref) => ref.split(':').map((p) => p.replace(/^([A-Z]+)(\d+)$/, '$$$1$$$2')).join(':');
+    const dn = sheets.map((s, i) => s.filter ? '<definedName name="_xlnm._FilterDatabase" localSheetId="' + i + '" hidden="1">\'' + esc(s.name) + '\'!' + abs(s.filter) + '</definedName>' : '').join('');
+    const files = [
+      { name: '[Content_Types].xml', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' + sheets.map((s, i) => '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('') + '</Types>' },
+      { name: '_rels/.rels', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+      { name: 'xl/workbook.xml', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView/></bookViews><sheets>' + sheets.map((s, i) => '<sheet name="' + esc(s.name) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join('') + '</sheets>' + (dn ? '<definedNames>' + dn + '</definedNames>' : '') + '</workbook>' },
+      { name: 'xl/_rels/workbook.xml.rels', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + sheets.map((s, i) => '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join('') + '<Relationship Id="rId' + (sheets.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' },
+      { name: 'xl/styles.xml', data: stylesXml() }
+    ];
+    sheets.forEach((s, i) => files.push({ name: 'xl/worksheets/sheet' + (i + 1) + '.xml', data: sheetXml(s) }));
+    return zip(files);
+  }
+
+  function sheet(name, cols, opts) {
+    const sh = Object.assign({ name, cols, rows: [], merges: [], heights: {}, cf: [], dv: [], freeze: 0, filter: '' }, opts || {});
+    sh.add = (cells, height) => { sh.rows.push(cells); const r = sh.rows.length; if (height) sh.heights[r] = height; return r; };
+    // строка с одним объединённым текстом на всю ширину
+    sh.line = (text, s, height, span) => {
+      const n = span || cols.length;
+      const r = sh.add([{ v: text, s }].concat(Array(n - 1).fill(0).map(() => ({ s }))), height || estH(text, cols.slice(0, n).reduce((a, b) => a + b, 0)));
+      if (n > 1) sh.merges.push('A' + r + ':' + colName(n - 1) + r);
+      return r;
+    };
+    return sh;
+  }
+  const estH = (text, width) => { const lines = String(text).split('\n').reduce((a, l) => a + Math.max(1, Math.ceil(l.length / (width * 1.05))), 0); return lines > 1 ? Math.min(409, lines * 15 + 3) : 0; };
+
+  async function download(filename, sheets) {
+    const blob = await build(sheets);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    return blob;
+  }
+  return { sheet, build, download, colName, estH };
+})();
+
+/* ---------- Общие тексты для выгрузки ---------- */
+const strip = (h) => { const d = document.createElement('div'); d.innerHTML = h; return d.textContent.replace(/\s+/g, ' ').trim(); };
+function paramsLine(R) {
+  const vat = !R.vatOn ? 'без НДС' : R.startInYear ? 'НДС ' + [...new Set(R.mo.filter((m) => m.payer).map((m) => m.R))].join('→') + '% с 1 ' + MONTHS_GEN[R.start] : 'НДС не начисляется';
+  const staff = state.staff === 'yes' ? 'сотрудники: ' + (Math.round(parseNum(state.staffCount) || 0)) + ' чел.' : 'без сотрудников';
+  return (R.isIP ? 'ИП' : 'ООО') + ' · УСН «' + (R.isD ? 'Доходы' : 'Доходы минус расходы') + '» ' + pct(R.rate * 100) + ' · ' + vat + ' · ' + staff + ' · доход за ' + (state.year - 1) + ' год: ' + rub(R.prev);
+}
+const todayStr = () => { const d = new Date(); return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear(); };
+
+/* ---------- Excel: «Расчёт налогов» ---------- */
+function buildTaxWorkbook(R) {
+  const sh = XL.sheet('Расчёт налогов', [50, 18, 18, 18, 18], { grid: false });
+  sh.line('Расчёт налогов УСН и НДС — ' + state.year + ' год', 'title', 26);
+  sh.line(paramsLine(R), 'sub');
+  sh.line('Сформировано ' + todayStr() + '. Расчёт справочный. Суммы курсивом — прогноз по среднему доходу за заполненные периоды. Как посчитана каждая сумма — на листе «Расшифровка».', 'sub');
+  sh.line('Статус НДС: ' + $('#status .status__title').textContent + '. ' + $('#status .status__text').textContent, 'noteWarn');
+  sh.add([]);
+
+  const writeModel = (title, cum) => {
+    const M = buildTableModel(R, cum);
+    sh.line(title, 'sect', 22);
+    sh.add([{ v: 'Показатель', s: 'thL' }].concat(M.cols.map((c, i) => ({ v: c + (cum ? ' (' + PERIODS[i] + ')' : '') + (M.fcCols[i] ? ', прогноз' : ''), s: 'th' }))), 32);
+    M.rows.forEach((r) => {
+      if (r.type === 'grp') { const n = sh.add([{ v: r.label, s: 'grp' }, { s: 'grp' }, { s: 'grp' }, { s: 'grp' }, { s: 'grp' }], 20); sh.merges.push('A' + n + ':E' + n); return; }
+      const ls = r.cls === 'pay' ? 'pTxt' : r.cls === 'total' ? 'tTxt' : 'txt';
+      sh.add([{ v: r.label, s: ls }].concat(r.vals.map((v, i) => {
+        if (v === null) return { v: '—', s: 'txtC' };
+        const s = r.cls === 'pay' ? 'pMoney' : r.cls === 'total' ? 'tMoney' : (M.fcCols[i] ? 'fcMoney' : 'money');
+        return { v, s };
+      })), r.label.length > 46 ? 32 : 0);
+    });
+    sh.add([]);
+  };
+  writeModel('Нарастающим итогом', true);
+  writeModel('По кварталам', false);
+
+  const Y = R.per[3];
+  sh.line('Итоги за год', 'sect', 22);
+  const tot = [
+    ['Доход УСН за год (без НДС)', R.yearInc, 'money'],
+    ['Налог УСН за год', Y.tax, 'money'],
+    ['НДС к уплате за год', Math.max(0, R.vatYear), 'money'],
+    ['Страховые взносы, всего', R.insYear, 'money'],
+    ...(R.isIP ? [['  в том числе ИП за себя (фиксированные + 1%)', R.ipFixed + R.ip1, 'money']] : []),
+    ...(state.staff === 'yes' ? [['  в том числе за сотрудников', R.empYear, 'money'], ['НДФЛ сотрудников (удерживается из зарплаты, справочно)', Y.empNdfl, 'money']] : []),
+    ['Всего платежей в бюджет за год', R.total, 'pMoney'],
+    ['Налоговая нагрузка от дохода', R.yearInc > 0 ? R.total / R.yearInc : 0, 'pct']
+  ];
+  tot.forEach(([l, v, s]) => sh.add([{ v: l, s: s === 'pMoney' ? 'pTxt' : 'txt' }, { v, s, raw: s === 'pct' }]));
+  const notes = resultNotes(R);
+  if (notes.length) { sh.add([]); notes.forEach(([k, t]) => sh.line(t, k ? 'noteWarn' : 'note')); }
+
+  // Лист 2 — расшифровка всех подсказок
+  const ex = XL.sheet('Расшифровка', [64, 22], { grid: false, portrait: true });
+  ex.line('Расшифровка расчёта — ' + state.year + ' год', 'title', 26);
+  ex.line('Здесь собраны пояснения, которые на сайте всплывают при наведении на суммы с пунктиром.', 'sub');
+  ex.add([]);
+  const seen = new Set();
+  [true, false].forEach((cum) => {
+    const M = buildTableModel(R, cum);
+    M.rows.forEach((r) => {
+      if (r.type !== 'row' || !r.tips) return;
+      r.tips.forEach((tip, i) => {
+        if (!tip || r.vals[i] === null || seen.has(tip)) return;
+        seen.add(tip);
+        const d = document.createElement('div'); d.innerHTML = tip;
+        const head = d.querySelector('.tip__h');
+        ex.line(head ? head.textContent : r.label, 'tipH', 22);
+        ex.line('Строка «' + r.label + '», столбец «' + M.cols[i] + '» (' + (cum ? 'нарастающим итогом' : 'по кварталам') + ')', 'tipCtx');
+        [...d.children].forEach((el) => {
+          if (el.classList.contains('tip__h')) return;
+          if (el.classList.contains('tip__s')) { ex.line(el.textContent.toUpperCase(), 'tipS'); return; }
+          if (el.classList.contains('tip__r')) {
+            const t = el.classList.contains('tip__r--t');
+            const a = el.querySelector('span').textContent, b = el.querySelector('b').textContent;
+            const m = b.replace(/[\s ]/g, '').match(/^(-?\d+)₽$/);
+            ex.add([{ v: a, s: t ? 'tipRt' : 'tipR' }, m ? { v: +m[1], s: t ? 'tipVt' : 'tipV' } : { v: b, s: t ? 'tipVtx' : 'tipVx' }], XL.estH(a, 64));
+            return;
+          }
+          if (el.classList.contains('tip__n')) { el.innerHTML.split(/<br\s*\/?>/i).map(strip).filter(Boolean).forEach((t) => ex.line(t, 'tipN')); return; }
+          if (el.tagName === 'UL') { [...el.children].forEach((li) => ex.line('• ' + li.textContent.trim(), 'tipN')); }
+        });
+        ex.add([]);
+      });
+    });
+  });
+  ex.line('Как посчитано — по шагам', 'sect', 24);
+  $$('#how li').forEach((li, i) => ex.line((i + 1) + '. ' + li.textContent.replace(/\s+/g, ' ').trim(), 'note'));
+  return [sh, ex];
+}
+
+/* ---------- Excel: «Платёжный календарь» ---------- */
+function buildCalendarWorkbook(R) {
+  const cols = [6, 13, 15, 15, 46, 42, 17, 16];
+  const sh = XL.sheet('Платёжный календарь', cols, { freeze: 5 });
+  sh.line('Платёжный календарь на ' + state.year + ' год', 'title', 26);
+  sh.line(paramsLine(R), 'sub');
+  sh.line('Сформировано ' + todayStr() + '. Статус выбирайте из списка в столбце «Статус» — итоги внизу пересчитаются сами. Даты перенесены с выходных, праздничные дни не учтены. «Прогноз» — сумма рассчитана по среднему доходу.', 'sub');
+  sh.add([]);
+  sh.add(['№', 'Дата', 'Месяц', 'Вид', 'Платёж или действие', 'Пояснение', 'Сумма, ₽', 'Статус'].map((v) => ({ v, s: 'th' })), 30);
+  const first = sh.rows.length + 1;
+  // те же строки, что на сайте, плюс уведомления до 25-го числа
+  const rows = buildCalendarItems(R);
+  const pay = [], rep = [];
+  rows.forEach((it, i) => {
+    const isRep = it.amount === null;
+    const r = sh.rows.length + 1;
+    (isRep ? rep : pay).push('H' + r);
+    const sub = [it.sub, it.fc ? 'прогноз' : ''].filter(Boolean).join(' · ');
+    sh.add([
+      { v: i + 1, s: 'txtC' },
+      { v: it.dt, s: 'date' },
+      { v: MONTHS[it.dt.getMonth()] + ' ' + it.dt.getFullYear(), s: 'txtC' },
+      { v: it.kind, s: 'txtC' },
+      { v: it.title, s: 'txt' },
+      { v: sub, s: 'txt' },
+      isRep ? { v: '', s: 'money' } : { v: it.amount, s: it.fc ? 'fcMoney' : 'money' },
+      { v: isRep ? 'не сдано' : 'не оплачено', s: 'status' }
+    ], Math.max(XL.estH(it.title, 46), XL.estH(sub, 42)));
+  });
+  const last = sh.rows.length;
+  if (rows.length) {
+    sh.filter = 'A' + (first - 1) + ':H' + last;
+    if (pay.length) sh.dv.push({ sqref: pay.join(' '), list: ['оплачено', 'не оплачено'] });
+    if (rep.length) sh.dv.push({ sqref: rep.join(' '), list: ['сдано', 'не сдано'] });
+    sh.cf.push({ sqref: 'H' + first + ':H' + last, rules: [{ eq: 'оплачено', dxf: 0 }, { eq: 'сдано', dxf: 0 }, { eq: 'не оплачено', dxf: 1 }, { eq: 'не сдано', dxf: 2 }] });
+  }
+  sh.add([]);
+  const G = 'G' + first + ':G' + last, H = 'H' + first + ':H' + last, D = 'D' + first + ':D' + last;
+  const tot = (label, f, s) => sh.add([null, null, null, null, null, { v: label, s: s === 'p' ? 'pTxt' : 'tTxt' }, { f, s: s === 'p' ? 'pMoney' : 'tMoney' }]);
+  tot('Итого платежей', 'SUM(' + G + ')');
+  tot('Оплачено', 'SUMIF(' + H + ',"оплачено",' + G + ')');
+  const rr = sh.rows.length;
+  tot('Осталось оплатить', 'G' + (rr - 1) + '-G' + rr, 'p');
+  sh.add([]);
+  sh.add([null, null, null, null, null, { v: 'Итого по видам', s: 'grp' }, { v: '', s: 'grp' }]);
+  ['УСН', 'НДС', 'Взносы и НДФЛ', 'Взносы ИП'].forEach((k) => {
+    if (!rows.some((x) => x.kind === k && x.amount !== null)) return;
+    sh.add([null, null, null, null, null, { v: k, s: 'txt' }, { f: 'SUMIF(' + D + ',"' + k + '",' + G + ')', s: 'money' }]);
+  });
+  return [sh];
+}
+
+function fileYear() { return state.year + '_' + (state.form === 'ip' ? 'ИП' : 'ООО'); }
+$('#xl-tax').addEventListener('click', () => { const R = compute(state); XL.download('Расчет_налогов_УСН_НДС_' + fileYear() + '.xlsx', buildTaxWorkbook(R)); });
+$('#xl-cal').addEventListener('click', () => { const R = compute(state); XL.download('Платежный_календарь_' + fileYear() + '.xlsx', buildCalendarWorkbook(R)); });
+
+/* ---------- 5% или 22% ---------- */
+(function () {
+  const rev = $('#cmp-rev'), share = $('#cmp-share'), out = $('#cmp-out'), sv = $('#cmp-share-v');
+  function upd() {
+    const r = parseNum(rev.value) || 0, sh = (+share.value) / 100;
+    sv.textContent = share.value + '%';
+    const v5 = r * 5 / 105, v7 = r * 7 / 107, v22 = Math.max(0, r * 22 / 122 - r * sh * 22 / 122);
+    const best = Math.min(v5, v7, v22);
+    out.innerHTML = [['5%', v5], ['7%', v7], ['22%', v22]].map(([n, v]) =>
+      '<div class="mini' + (v === best ? ' is-best' : '') + '"><div class="mini__l">НДС ' + n + ' к уплате</div><div class="mini__v">' + rub(v) + '</div></div>').join('');
+  }
+  rev.addEventListener('input', upd);
+  rev.addEventListener('change', () => { rev.value = fmtInput(parseNum(rev.value)); });
+  share.addEventListener('input', upd);
+  upd();
+})();
+
+render();
+
+/* ============================================================
+   Анимации — перенесены с сайта НейроБухгалтерии (script.js v4)
+   ============================================================ */
+/* ---------- 0. Живая таблица на первом экране ---------- */
+(function () {
+  const cvs = document.querySelector('.hero__grid');
+  const hero = document.querySelector('.hero');
+  if (!cvs || !hero || !cvs.getContext) return;
+  const ctx = cvs.getContext('2d');
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CELL = 46, SPAWN = 420, SWEEP = 7600, PAD = 28, FADE = 120;
+  const COLORS = [[0, 138, 170, 0.20], [43, 182, 217, 0.22], [209, 136, 79, 0.15]];
+  let W = 0, H = 0, cols = 0, rows = 0, cells = [];
+  let running = false, raf = null, last = 0, spawnAcc = 0, sweepAcc = 0;
+  const inner = hero.querySelector('.hero__inner');
+  let safe = null;
+  function measureSafe() {
+    const h = hero.getBoundingClientRect(), i = inner.getBoundingClientRect();
+    safe = { l: i.left - h.left - PAD, t: i.top - h.top - PAD, r: i.right - h.left + PAD, b: i.bottom - h.top + PAD };
+  }
+  function falloff(x, y) {
+    if (!safe) return 1;
+    const dx = Math.max(safe.l - x, 0, x - safe.r), dy = Math.max(safe.t - y, 0, y - safe.b);
+    const d = Math.sqrt(dx * dx + dy * dy);
+    return d >= FADE ? 1 : d / FADE;
+  }
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const r = hero.getBoundingClientRect();
+    W = Math.ceil(r.width); H = Math.ceil(r.height);
+    cvs.width = W * dpr; cvs.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.ceil(W / CELL); rows = Math.ceil(H / CELL);
+  }
+  function drawGrid() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(0,138,170,.07)'; ctx.lineWidth = 1; ctx.beginPath();
+    for (let x = 0; x <= cols; x++) { ctx.moveTo(x * CELL + 0.5, 0); ctx.lineTo(x * CELL + 0.5, H); }
+    for (let y = 0; y <= rows; y++) { ctx.moveTo(0, y * CELL + 0.5); ctx.lineTo(W, y * CELL + 0.5); }
+    ctx.stroke();
+  }
+  function light(c, r, color, delay) { cells.push({ c, r, col: color, t: -(delay || 0), life: 1900 + Math.random() * 900 }); }
+  function randomCell() { light(Math.floor(Math.random() * cols), Math.floor(Math.random() * rows), COLORS[Math.floor(Math.random() * COLORS.length)]); }
+  function sweepRow() {
+    const r = Math.floor(Math.random() * rows);
+    const color = Math.random() < 0.7 ? COLORS[0] : COLORS[2];
+    for (let c = 0; c < cols; c++) light(c, r, color, c * 55);
+  }
+  function box(x, y, w, h) { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, 3); else ctx.rect(x, y, w, h); ctx.fill(); }
+  function frame(ts) {
+    if (!running) return;
+    const dt = Math.min(ts - last, 60);
+    last = ts; spawnAcc += dt; sweepAcc += dt;
+    if (spawnAcc >= SPAWN) { spawnAcc = 0; randomCell(); }
+    if (sweepAcc >= SWEEP) { sweepAcc = 0; sweepRow(); }
+    drawGrid();
+    for (let i = cells.length - 1; i >= 0; i--) {
+      const cell = cells[i];
+      cell.t += dt;
+      if (cell.t < 0) continue;
+      const p = cell.t / cell.life;
+      if (p >= 1) { cells.splice(i, 1); continue; }
+      const x = cell.c * CELL + 3, y = cell.r * CELL + 3;
+      const k = falloff(x + CELL / 2, y + CELL / 2);
+      if (k <= 0) continue;
+      const a = p < 0.22 ? p / 0.22 : (p > 0.55 ? 1 - (p - 0.55) / 0.45 : 1);
+      const col = cell.col;
+      ctx.fillStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',' + (col[3] * a * k) + ')';
+      box(x, y, CELL - 6, CELL - 6);
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  function start() { if (running || still) return; running = true; last = performance.now(); raf = requestAnimationFrame(frame); }
+  function stop() { running = false; if (raf) cancelAnimationFrame(raf); raf = null; }
+  resize(); measureSafe(); drawGrid();
+  if (still) return;
+  if ('IntersectionObserver' in window) new IntersectionObserver((e) => (e[0].isIntersecting ? start() : stop()), { threshold: 0.01 }).observe(hero);
+  else start();
+  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+  let t;
+  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { resize(); measureSafe(); cells = []; drawGrid(); }, 180); });
+})();
+
+/* ---------- 1. Мобильное меню ---------- */
+(function () {
+  const burger = document.querySelector('.burger');
+  const nav = document.getElementById('nav');
+  if (!burger || !nav) return;
+  const close = () => { nav.classList.remove('is-open'); burger.setAttribute('aria-expanded', 'false'); };
+  burger.addEventListener('click', () => {
+    const open = nav.classList.toggle('is-open');
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  nav.addEventListener('click', (e) => { if (e.target.closest('a')) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+})();
+
+/* ---------- 1.5. Появление секций при прокрутке ---------- */
+(function () {
+  const items = document.querySelectorAll('[data-reveal]');
+  if (!items.length) return;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (still || !('IntersectionObserver' in window)) return;
+  document.documentElement.classList.add('js-reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('is-visible');
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.1 });
+  items.forEach((el) => io.observe(el));
+})();
+</script>
+</body>
+</html>
