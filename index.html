@@ -436,7 +436,10 @@ select.field__input { appearance: none; -webkit-appearance: none; background-ima
 
 .site-footer { background: var(--teal-600); color: #fff; padding: 28px 0; font-size: 15px; }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.site-footer p { margin: 0; opacity: .92; }
+.site-footer p { margin: 0; }
+.site-footer a { color: #fff; opacity: .92; text-decoration: underline; text-underline-offset: 3px; }
+.site-footer a:hover { color: #fff; opacity: 1; }
+.footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
 [hidden] { display: none !important; }
@@ -905,8 +908,8 @@ select.field__input { appearance: none; -webkit-appearance: none; background-ima
 
 <footer class="site-footer">
   <div class="container footer-inner">
-    <p>Шпаргалка УСН + НДС · данные на 12.11.2026</p>
-    <p><a href="#top" style="color:#fff">Наверх ↑</a></p>
+    <p>© 2026 НейроБухгалтерия · Марина</p>
+    <div class="footer-links"><a href="https://t.me/neurobuh" target="_blank" rel="noopener">t.me/neurobuh</a></div>
   </div>
 </footer>
 
